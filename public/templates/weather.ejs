@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            color: #333;
+        }
+        .weather-container {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .weather-container p {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        .weather-container .temperature {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff7f50;
+        }
+        .weather-container .icon {
+            width: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Weather Information for <%= weatherData.name %>, <%= weatherData.sys.country %></h1>
+    <div class="weather-container">
+        <p><strong>Coordinates:</strong> Latitude: <%= weatherData.coord.lat %>, Longitude: <%= weatherData.coord.lon %></p>
+        
+        <p><strong>Weather:</strong> <%= weatherData.weather[0].main %> - <%= weatherData.weather[0].description %></p>
+        <img src="http://openweathermap.org/img/wn/<%= weatherData.weather[0].icon %>.png" alt="<%= weatherData.weather[0].description %>" class="icon">
+
+        <p class="temperature"><strong>Temperature:</strong> <%= weatherData.main.temp %> K</p>
+        <p><strong>Feels Like:</strong> <%= weatherData.main.feels_like %> K</p>
+        <p><strong>Min Temperature:</strong> <%= weatherData.main.temp_min %> K</p>
+        <p><strong>Max Temperature:</strong> <%= weatherData.main.temp_max %> K</p>
+        <p><strong>Pressure:</strong> <%= weatherData.main.pressure %> hPa</p>
+        <p><strong>Humidity:</strong> <%= weatherData.main.humidity %>%</p>
+
+        <h3>Wind Information:</h3>
+        <p><strong>Wind Speed:</strong> <%= weatherData.wind.speed %> m/s</p>
+        <p><strong>Wind Direction:</strong> <%= weatherData.wind.deg %>°</p>
+
+        <h3>Rain Information:</h3>
+        <p><strong>Rain Volume in Last Hour:</strong> <%= weatherData.rain ? weatherData.rain['1h'] : 'No rain' %> mm</p>
+
+        <h3>Cloud Coverage:</h3>
+        <p><strong>Clouds:</strong> <%= weatherData.clouds.all %>%</p>
+
+        <h3>Sunrise and Sunset:</h3>
+        <p><strong>Sunrise:</strong> <%= new Date(weatherData.sys.sunrise * 1000).toLocaleTimeString() %></p>
+        <p><strong>Sunset:</strong> <%= new Date(weatherData.sys.sunset * 1000).toLocaleTimeString() %></p>
+    </div>
+</body>
+</html>
