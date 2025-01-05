@@ -20,7 +20,7 @@ app.set('views', path.join('./views'))
 
 const API_KEY = '1d6dc3890cf79b7449306bced111270d';
 app.get('/', (req,res)=>{
-    res.render('index')
+    res.sendFile(path.join(__dirname, 'public/templates/index.html'));
 })
 
 app.post('/weather', async (req, res) => {
