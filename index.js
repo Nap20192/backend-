@@ -41,6 +41,17 @@ app.post('/weather', async (req, res) => {
     }
 });
 
+app.get('/meals', async (req, res) => {
+    try {
+        const mealResponse = await axios.get('https://www.themealdb.com/api/json/v1/1/random.php');
+        const mealData = mealResponse.data.meals[0];
+
+        res.render('meals', { mealData});
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error fetching data from APIs.');
+    }
+});
 
 const PORT = 3000
 
