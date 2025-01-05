@@ -22,13 +22,17 @@ const API_KEY = '1d6dc3890cf79b7449306bced111270d';
 app.get('/', (req,res)=>{
     res.render('index')
 })
+
 app.post('/weather', async (req, res) => {
     const city =req.body.city; 
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=1d6dc3890cf79b7449306bced111270d`;
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}`;
     try {
         const response = await axios.get(url);
         const weatherData = response.data;
-        res.render('weather',{weatherData})
+        res.render('weather',{weatherData,
+            "lat":weatherData.lon,
+            log:weatherData.log
+        })
     } catch (error) {
         console.error(error);
         res.status(500).send('Ошибка при получении данных от OpenWeatherAPI.');
