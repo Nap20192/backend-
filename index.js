@@ -30,11 +30,13 @@ app.post('/weather', async (req, res) => {
     try {
         const response = await axios.get(url);
         const weatherData = response.data;
+        const lat = weatherData.coord.lat
+        const lon = weatherData.coord.lon
 
         const photo = await axios.get(`https://api.unsplash.com/search/photos?query=${city} ${weatherData.weather[0].description}&client_id=yXWN-B1ouwIhIHNGXMFTnnuMRRtM0G6GQwbrmm_DAHg`)
         const p = photo.data.results[0]
         console.log(p); 
-        res.render('weather',{weatherData,p})
+        res.render('weather',{weatherData,p,lat,lon})
     } catch (error) {
         console.error(error);
         res.status(500).send('Ошибка при получении данных от OpenWeatherAPI.');

@@ -11,7 +11,15 @@
     crossorigin=""></script>
     <title>Weather Information</title>
     <style>
-        #map { height: 180px; 
+        .qwe{
+            display: flex;
+            flex-direction: column;
+            gap: 90px;
+            justify-content: center;
+            align-items: center;
+        }
+        #map { width: 80%;
+            height: 180px; 
         }
         body {
             font-family: Arial, sans-serif;
@@ -56,8 +64,10 @@
 
     <div class="weather-container">
         <h1>Weather Information for <%= weatherData.name %>, <%= weatherData.sys.country %></h1>
+        <strong> Latitude: <p id="lat"><%= weatherData.coord.lat %></p></strong>
+        <strong> Latitude: <p id="lon"><%= weatherData.coord.lon %></p></strong>
 
-        <p><strong>Coordinates:</strong> Latitude: <%= weatherData.coord.lat %>, Longitude: <%= weatherData.coord.lon %></p>
+
         
         <p><strong>Weather:</strong> <%= weatherData.weather[0].main %> - <%= weatherData.weather[0].description %></p>
         <img src="http://openweathermap.org/img/wn/<%= weatherData.weather[0].icon %>.png" alt="<%= weatherData.weather[0].description %>" class="icon">
@@ -83,8 +93,24 @@
         <p><strong>Sunrise:</strong> <%= new Date(weatherData.sys.sunrise * 1000).toLocaleTimeString() %></p>
         <p><strong>Sunset:</strong> <%= new Date(weatherData.sys.sunset * 1000).toLocaleTimeString() %></p>
 
-    </div>
-    <img src="<%= p.urls.small %>">
+    </div><div class="qwe">
+            <img src="<%= p.urls.small %>">
+        <div id="map"></div>
 
+    </div>
+<script>
+                const latitude = document.getElementById("lat").textContent
+            const longitude  = document.getElementById("lon").textContent;
+        
+            const map = L.map('map').setView([latitude, longitude], 13);
+        
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              maxZoom: 19,
+            }).addTo(map);
+        
+            L.marker([latitude, longitude]).addTo(map)
+              .bindPopup(`Координаты: ${latitude}, ${longitude}`)
+              .openPopup();
+</script>
 </body>
 </html>
