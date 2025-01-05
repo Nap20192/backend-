@@ -16,7 +16,11 @@
         body {
             font-family: Arial, sans-serif;
             margin: 0;
+            display: grid;
+            grid-template-columns: repeat(2,1fr);
             padding: 20px;
+            align-items: center;
+            justify-content: center;
             background-color: #f4f4f9;
         }
         h1 {
@@ -40,12 +44,18 @@
         .weather-container .icon {
             width: 50px;
         }
+        .p{
+            width: 300px;
+            height: auto;
+        }
+
     </style>
 </head>
 <body>
 
-    <h1>Weather Information for <%= weatherData.name %>, <%= weatherData.sys.country %></h1>
     <div class="weather-container">
+        <h1>Weather Information for <%= weatherData.name %>, <%= weatherData.sys.country %></h1>
+
         <p><strong>Coordinates:</strong> Latitude: <%= weatherData.coord.lat %>, Longitude: <%= weatherData.coord.lon %></p>
         
         <p><strong>Weather:</strong> <%= weatherData.weather[0].main %> - <%= weatherData.weather[0].description %></p>
@@ -73,7 +83,7 @@
         <p><strong>Sunset:</strong> <%= new Date(weatherData.sys.sunset * 1000).toLocaleTimeString() %></p>
 
     </div>
-
+    <img src="<%= p.urls.small %>">
 
 </body>
 </html>
