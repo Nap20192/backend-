@@ -34,7 +34,7 @@ app.post('/weather', async (req, res) => {
         const lat = weatherData.coord.lat
         const lon = weatherData.coord.lon
 
-        const photo = await axios.get(`https://api.unsplash.com/search/photos?query=${city} ${weatherData.weather[0].description}&client_id=yXWN-B1ouwIhIHNGXMFTnnuMRRtM0G6GQwbrmm_DAHg`)
+        const photo = await axios.get(`https://api.unsplash.com/search/photos?query=${city}&client_id=yXWN-B1ouwIhIHNGXMFTnnuMRRtM0G6GQwbrmm_DAHg`)
         const p = photo.data.results[0]
         console.log(p); 
         res.render('weather',{weatherData,p,lat,lon})
