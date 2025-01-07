@@ -9,54 +9,54 @@
     .main {
       font-family: Arial, sans-serif;
       display: flex;
+      flex-direction: column;
+      gap: 10px;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       margin: 0;
       background-color: #f0f0f0;
     }
-
+    h1{
+      font-weight: 700;
+    }
     .weather-container {
-      
       text-align: center;
+      width: 50%;
       padding: 20px;
       border-radius: 10px;
       background: white;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-
-    .city-panel {
-      display: grid;
-      grid-template-columns: repeat(4,1fr);
-      gap: 10px;
-      margin-top: 20px;
+    input {
+      width: 300px;
+      padding: 15px;
+      font-size: 1rem;
+      color: #333;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 25px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      outline: none;
+      transition: all 0.3s ease-in-out;
     }
 
-    .city-button {
-      padding: 15px 25px;
-      border: none;
-      border-radius: 5px;
-      background-color: #007bff;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background-color 0.3s, transform 0.2s;
+    input:focus {
+      border-color: #74b9ff;
+      box-shadow: 0 6px 12px rgba(192, 109, 26, 0.3);
     }
 
-    .city-button:hover {
-      background-color: #0056b3;
-      transform: scale(1.05);
+    input::placeholder {
+      color: #aaa;
+      font-style: italic;
     }
 
-    .city-button:active {
-      background-color: #003f7f;
-    }
   </style>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Lookoom</a>
+      <a class="navbar-brand" href="/">Lookoom</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -74,26 +74,11 @@
   </nav>
 
   <div class="main">
+    <h1>Choose city</h1>
+
   <div class="weather-container">
-    <h2>Choose city:</h2>
     <form action="weather" method="POST">
-      <div class="city-panel">
-        <button class="city-button" type="submit" name="city" value="London">London</button>
-        <button class="city-button" type="submit" name="city" value="New York">New York</button>
-        <button class="city-button" type="submit" name="city" value="Tokyo">Tokyo</button>
-        <button class="city-button" type="submit" name="city" value="Paris">Paris</button>
-        <button class="city-button" type="submit" name="city" value="Moscow">Moscow</button>
-        <button class="city-button" type="submit" name="city" value="Berlin">Berlin</button>
-        <button class="city-button" type="submit" name="city" value="Sydney">Sydney</button>
-        <button class="city-button" type="submit" name="city" value="Beijing">Beijing</button>
-        <button class="city-button" type="submit" name="city" value="Rome">Rome</button>
-        <button class="city-button" type="submit" name="city" value="Madrid">Madrid</button>
-        <button class="city-button" type="submit" name="city" value="Dubai">Dubai</button>
-        <button class="city-button" type="submit" name="city" value="Singapore">Singapore</button>
-        <button class="city-button" type="submit" name="city" value="Seoul">Seoul</button>
-        <button class="city-button" type="submit" name="city" value="Cape Town">Cape Town</button>
-        <button class="city-button" type="submit" name="city" value="Istanbul">Istanbul</button>
-      </div>
+      <input type="text "  type="submit" name="city" >
     </form>
   </div>
 </div>

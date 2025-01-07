@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url'
 import { dirname } from 'path'
 import axios from 'axios'
 
+
 const require = createRequire(import.meta.url)
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -39,7 +40,7 @@ app.post('/weather', async (req, res) => {
         res.render('weather',{weatherData,p,lat,lon})
     } catch (error) {
         console.error(error);
-        res.status(500).send('Ошибка при получении данных от OpenWeatherAPI.');
+        res.status(500).render('error');
     }
 });
 
