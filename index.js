@@ -13,7 +13,7 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.use(express.static(path.join(__dirname, '../public')))
+app.use(express.static(path.join(__dirname, 'public')))
 app.set('view engine', 'ejs')
 app.set('views', path.join('./views'))
 
@@ -45,15 +45,15 @@ app.post('/weather', async (req, res) => {
 
 app.get('/meals', async (req, res) => {
     try {
-        const mealResponse = await axios.get('https://www.themealdb.com/api/json/v1/1/random.php');
-        const mealData = mealResponse.data.meals[0];
+        const mealsResponse = await axios.get('https://www.themealdb.com/api/json/v1/1/search.php?s=')
+        const mealsData = mealsResponse.data.meals
 
-        res.render('meals', { mealData});
+        res.render('meals', { mealsData })
     } catch (error) {
-        console.error(error);
-        res.status(500).send('Error fetching data from APIs.');
+        console.error(error)
+        res.status(500).send('Error fetching data from APIs.')
     }
-});
+})
 
 const PORT = 3000
 
