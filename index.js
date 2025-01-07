@@ -55,6 +55,42 @@ app.get('/meals', async (req, res) => {
     }
 })
 
+app.get('/cocktails', async (req, res) => {
+    try {
+        const cocktailsResponse = await axios.get('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=margarita')
+        const cocktailsData = cocktailsResponse.data.drinks;
+
+        res.render('cocktails', { cocktailsData });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error fetching data from CocktailDB.');
+    }
+});
+
+app.get('/instructions/:id', async (req, res) => {
+    const recipeId = req.params.id;
+    const source = req.query.source;
+  
+    try {
+      let apiUrl;
+      if (source === 'meals') {
+        apiUrl = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${recipeId}`;
+      } else if (source === 'cocktails') {
+        apiUrl = `https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${recipeId}`;
+      } else {
+        return res.status(400).send('Invalid source.');
+      }
+  
+      const response = await axios.get(apiUrl);
+      const recipeData = source === 'meals' ? response.data.meals[0] : response.data.drinks[0];
+  
+      res.render('instructions', { recipe: recipeData });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Error fetching recipe details.');
+    }
+  });
+
 const PORT = 3000
 
 app.listen(PORT, () => {

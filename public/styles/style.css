@@ -4,6 +4,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: "Georgia";
 }
 
 body {
@@ -69,6 +70,10 @@ header h1 {
   cursor: pointer;
 }
 
+.btn:hover {
+  background-color: #c753f1;
+  color: white;
+}
 
 .description-container {
   display: flex;
@@ -91,3 +96,15 @@ header h1 {
   color: white;
 }
 
+img {
+  border-radius: 10px;
+}
+
+
+hr {
+  height: 2px; 
+  border: none;
+  background: #e16868;
+  margin: 20px 0;
+  border-radius: 5px;
+}
