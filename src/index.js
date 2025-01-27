@@ -80,12 +80,11 @@ app.get('/', async (req,res)=>{
     username = user.username
     recipeData = await UserDataController.getViewedRecipes(username)
     console.log(recipeData)
-    res.render('home', { username, recipeData })
+    
   } else {
     username = null
-    res.render('home', { username })
   }
-  
+  res.render('home', { username, recipeData })
   
 })
 

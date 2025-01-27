@@ -42,6 +42,7 @@ class UserDataController {
 
     async getViewedRecipes(username) {
       try {
+        await this.createUserData(username)
         const userData = await UserData.findOne({ username })
         let viewedRecipes = userData.viewedRecipes ? userData.viewedRecipes : []
         let recipes = []
