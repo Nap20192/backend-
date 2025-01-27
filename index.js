@@ -56,9 +56,22 @@ app.get('/meals', async (req, res) => {
     }
 })
 
+app.post('/meals', async (req, res) => {
+  const query = req.body.query
+  try {
+    const mealsResponse = await axios.get(`https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`)
+    const mealsData = mealsResponse.data.meals
+    res.render('meals', { mealsData })
+  }
+  catch (error) {
+    console.error(error)
+    res.status(500).send('Error fetching data from APIs.')
+  }
+})
+
 app.get('/cocktails', async (req, res) => {
     try {
-        const cocktailsResponse = await axios.get('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=margarita')
+        const cocktailsResponse = await axios.get('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=martini')
         const cocktailsData = cocktailsResponse.data.drinks;
 
         res.render('cocktails', { cocktailsData });

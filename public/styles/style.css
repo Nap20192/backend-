@@ -108,3 +108,28 @@ hr {
   margin: 20px 0;
   border-radius: 5px;
 }
+
+
+h1{
+  font-weight: 700;
+}
+.search-container {
+  text-align: center;
+  width: 50%;
+  padding: 20px;
+  margin: auto;
+}
+
+input {
+
+  width:80%;
+  padding: 15px;
+  font-size: 1rem;
+  color: #333;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 25px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  outline: none;
+  transition: all 0.3s ease-in-out;
+}
