@@ -8,6 +8,7 @@ import AuthController from './AuthController.js'
 import mongoose from 'mongoose'
 import cookieParser from 'cookie-parser'
 import { body } from 'express-validator';
+import authMiddleware from './AuthMiddleware.js'
 
 dotenv.config();
 const require = createRequire(import.meta.url)
@@ -46,9 +47,7 @@ const startDBConnection = async () => {
 startDBConnection();
 console.log("dd")
 
-app.get('/', (req,res)=>{
-  res.render('index')
-})
+
 
 app.post('/register', 
   body('username'),
@@ -57,7 +56,12 @@ app.post('/register',
 
 app.post('/login', AuthController.login);
 app.post('/logout', AuthController.logout);
+app.get('/getUsers',AuthController.getUser)
+app.use(authMiddleware)
 
+app.get('/', (req,res)=>{
+  res.render('index')
+})
 
 app.post('/weather', async (req, res) => {
     const city =req.body.city; 

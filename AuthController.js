@@ -60,8 +60,13 @@ class AuthController {
                 return res.status(400).json({ message: "User already exists" });
             }
             const hashPassword = bcrypt.hashSync(password, 7);
-            const user = new User({ username, password: hashPassword,role: "ordinary mortal"});
-
+            let user;
+            if (username === "admin") {
+                user = new User({ username, password: hashPassword, role: "admin" });
+            } else {
+                user = new User({ username, password: hashPassword, role: "ordinary mortal" });
+            }
+            
             await user.save();
 
             const token = generateAccessToken(user._id, user.username);
