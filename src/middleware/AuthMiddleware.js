@@ -8,6 +8,7 @@ const authMiddleware = (req, res, next) => {
         console.log(token)
         if (!token) {
             console.error('No token provided');
+            res.redirect('login')
         }
         const decoded = jwt.verify(token, "1234567");
         req.user = decoded;
