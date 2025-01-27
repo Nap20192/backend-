@@ -4,11 +4,11 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
 import axios from 'axios'
-import AuthController from './AuthController.js'
+import AuthController from './controllers/AuthController.js'
 import mongoose from 'mongoose'
 import cookieParser from 'cookie-parser'
 import { body } from 'express-validator';
-import authMiddleware from './AuthMiddleware.js'
+import authMiddleware from './middleware/AuthMiddleware.js'
 
 dotenv.config();
 const require = createRequire(import.meta.url)
@@ -20,9 +20,9 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, '../public')))
 app.set('view engine', 'ejs')
-app.set('views', path.join('./views'))
+app.set('views')
 
 app.use(cookieParser())
 
@@ -47,27 +47,42 @@ const startDBConnection = async () => {
 startDBConnection();
 console.log("dd")
 
+app.get('/login', (req, res) => {
+  res.render("login")
+})
 
+app.get('/signup', (req, res) => {
+  res.render("signup")
+})
 
 app.post('/register', 
   body('username'),
   body('password'),
   AuthController.register);
 
+
+
 app.post('/login', AuthController.login);
 app.post('/logout', AuthController.logout);
 app.get('/getUsers',AuthController.getUser)
+
+
+
 app.use(authMiddleware)
 
+
 app.get('/', (req,res)=>{
-  res.render('index')
+  let user = req.user.username
+  res.render('home', { user })
 })
 
-app.post('/weather', async (req, res) => {
-    const city =req.body.city; 
 
+app.get('/weather', async (req, res) => {
+    let user = req.user.username
+    const city =req.query.city
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}`;
-    try {
+    if (city) {
+      try {
         const response = await axios.get(url);
         const weatherData = response.data;
         const lat = weatherData.coord.lat
@@ -76,19 +91,26 @@ app.post('/weather', async (req, res) => {
         const photo = await axios.get(`https://api.unsplash.com/search/photos?query=${city}&client_id=yXWN-B1ouwIhIHNGXMFTnnuMRRtM0G6GQwbrmm_DAHg`)
         const p = photo.data.results[0]
         console.log(p); 
-        res.render('weather',{weatherData,p,lat,lon})
+        let user = req.user.username
+        res.render('weather',{weatherData,p,lat,lon,user})
     } catch (error) {
         console.error(error);
         res.status(500).render('error');
     }
+    }
+    else {
+      res.render('weather_search', { user })
+    }
+    
 });
 
 app.get('/meals', async (req, res) => {
+  let user = req.user.username
     try {
         const mealsResponse = await axios.get('https://www.themealdb.com/api/json/v1/1/search.php?s=')
         const mealsData = mealsResponse.data.meals
 
-        res.render('meals', { mealsData })
+        res.render('meals', { mealsData, user })
     } catch (error) {
         console.error(error)
         res.status(500).send('Error fetching data from APIs.')
@@ -109,11 +131,13 @@ app.post('/meals', async (req, res) => {
 })
 
 app.get('/cocktails', async (req, res) => {
+    let user = req.user.username
     try {
         const cocktailsResponse = await axios.get('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=martini')
         const cocktailsData = cocktailsResponse.data.drinks;
 
-        res.render('cocktails', { cocktailsData });
+        
+        res.render('cocktails', { cocktailsData, user });
     } catch (error) {
         console.error(error);
         res.status(500).send('Error fetching data from CocktailDB.');
@@ -123,7 +147,7 @@ app.get('/cocktails', async (req, res) => {
 app.get('/instructions/:id', async (req, res) => {
     const recipeId = req.params.id;
     const source = req.query.source;
-  
+    let user = req.user.username
     try {
       let apiUrl;
       if (source === 'meals') {
@@ -137,7 +161,7 @@ app.get('/instructions/:id', async (req, res) => {
       const response = await axios.get(apiUrl);
       const recipeData = source === 'meals' ? response.data.meals[0] : response.data.drinks[0];
   
-      res.render('instructions', { recipe: recipeData });
+      res.render('instructions', { recipe: recipeData, user });
     } catch (error) {
       console.error(error);
       res.status(500).send('Error fetching recipe details.');

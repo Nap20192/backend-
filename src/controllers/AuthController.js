@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import User from './User.js';
+import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
 
 
@@ -32,14 +32,15 @@ class AuthController {
             const idString = candidate._id.toString(); 
             console.log(candidate.username)
             res.cookie('Access',token,{maxAge:24*60*60*1000,httpOnly:true})
-            return res.json({ 
-                token, 
-                user: {
-                    id: candidate._id,
-                    username: candidate.username,
-                    role: candidate.role
-                }
-            });
+            res.redirect('/')
+            // return res.json({ 
+            //     token, 
+            //     user: {
+            //         id: candidate._id,
+            //         username: candidate.username,
+            //         role: candidate.role
+            //     }
+            // });
             } catch (err) {
             console.error('Error during login:', err);
             res.status(500).json({ message: "Internal server error" });
@@ -94,7 +95,8 @@ class AuthController {
         try{
             const {Access} = req.cookies;
             res.clearCookie('Access');
-            return res.status(200).json({ message: "Logout successful" })
+            console.log("Logout successful")
+            return res.redirect('/login')
         }
         catch(e){
             console.log(e)
