@@ -1,10 +1,15 @@
 import { createRequire } from 'module'
+import dotenv from 'dotenv'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
 import axios from 'axios'
+import AuthController from './AuthController.js'
+import mongoose from 'mongoose'
+import cookieParser from 'cookie-parser'
+import { body } from 'express-validator';
 
-
+dotenv.config();
 const require = createRequire(import.meta.url)
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -18,11 +23,41 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.set('view engine', 'ejs')
 app.set('views', path.join('./views'))
 
+app.use(cookieParser())
 
 const API_KEY = '1d6dc3890cf79b7449306bced111270d';
+const MONGO_URI = process.env.MONGO_URI 
+
+
+const startDBConnection = async () => {
+  try {
+      await mongoose.connect(MONGO_URI, {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+      });
+      console.log('Connected to MongoDB');
+      console.log(MONGO_URI)
+  } catch (err) {
+      console.error('Error connecting to MongoDB:', err);
+      process.exit(1);
+  }
+};
+
+startDBConnection();
+console.log("dd")
+
 app.get('/', (req,res)=>{
-    res.render('index')
+  res.render('index')
 })
+
+app.post('/register', 
+  body('username'),
+  body('password'),
+  AuthController.register);
+
+app.post('/login', AuthController.login);
+app.post('/logout', AuthController.logout);
+
 
 app.post('/weather', async (req, res) => {
     const city =req.body.city; 
@@ -92,7 +127,7 @@ app.get('/instructions/:id', async (req, res) => {
     }
   });
 
-const PORT = 3000
+const PORT = process.env.PORT
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`)
