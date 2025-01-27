@@ -135,7 +135,7 @@ input {
 
 .login-container {
   margin: 0 auto;
-  width: 300px;
+  width: 400px;
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 25px;
@@ -153,6 +153,11 @@ input {
 
 .login-container h1 {
   text-align: center;
+}
+
+.login-container p {
+  margin-bottom: 0;
+  margin-top: 10px;
 }
 
 .form-group input {

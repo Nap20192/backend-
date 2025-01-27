@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url'
 import { dirname } from 'path'
 import axios from 'axios'
 import AuthController from './controllers/AuthController.js'
+import UserDataController from './controllers/UserDataController.js'
 import mongoose from 'mongoose'
 import cookieParser from 'cookie-parser'
 import { body } from 'express-validator';
@@ -71,69 +72,89 @@ app.get('/getUsers',AuthController.getUser)
 app.use(authMiddleware)
 
 
-app.get('/', (req,res)=>{
-  let user = req.user.username
-  res.render('home', { user })
+app.get('/', async (req,res)=>{
+  let user = req.user
+  let username
+  let recipeData
+  if (user) {
+    username = user.username
+    recipeData = await UserDataController.getViewedRecipes(username)
+    console.log(recipeData)
+    res.render('home', { username, recipeData })
+  } else {
+    username = null
+    res.render('home', { username })
+  }
+  
+  
 })
 
 
 app.get('/weather', async (req, res) => {
-    let user = req.user.username
-    const city =req.query.city
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}`;
-    if (city) {
-      try {
-        const response = await axios.get(url);
-        const weatherData = response.data;
-        const lat = weatherData.coord.lat
-        const lon = weatherData.coord.lon
+  const city =req.query.city
+  const query = "Weather:" + city
+  let user = req.user
+  let username
+  if (user) {
+    username = user.username
+    UserDataController.updateSearchHistory(username, query)
+  } else {
+    username = null
+  }
+  
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}`;
+  if (city) {
+    try {
+      const response = await axios.get(url);
+      const weatherData = response.data;
+      const lat = weatherData.coord.lat
+      const lon = weatherData.coord.lon
 
-        const photo = await axios.get(`https://api.unsplash.com/search/photos?query=${city}&client_id=yXWN-B1ouwIhIHNGXMFTnnuMRRtM0G6GQwbrmm_DAHg`)
-        const p = photo.data.results[0]
-        console.log(p); 
-        let user = req.user.username
-        res.render('weather',{weatherData,p,lat,lon,user})
-    } catch (error) {
-        console.error(error);
-        res.status(500).render('error');
-    }
-    }
-    else {
-      res.render('weather_search', { user })
-    }
+      const photo = await axios.get(`https://api.unsplash.com/search/photos?query=${city}&client_id=yXWN-B1ouwIhIHNGXMFTnnuMRRtM0G6GQwbrmm_DAHg`)
+      const p = photo.data.results[0]
+      console.log(p); 
+      res.render('weather',{weatherData,p,lat,lon,username})
+      
+  } catch (error) {
+      console.error(error);
+      res.status(500).render('error');
+  }
+  }
+  else {
+    res.render('weather_search', { username })
+  }
     
 });
 
 app.get('/meals', async (req, res) => {
-  let user = req.user.username
-    try {
-        const mealsResponse = await axios.get('https://www.themealdb.com/api/json/v1/1/search.php?s=')
-        const mealsData = mealsResponse.data.meals
+  const query = req.query.query ? req.query.query : ''
+  const queryReceiver = 'https://www.themealdb.com/api/json/v1/1/search.php?s='
+  let user = req.user
+  let username
+  if (user) {
+    username = user.username
+    UserDataController.updateSearchHistory(username, queryReceiver, query)
+  } else {
+    username = null
+  }
+  if (query.length > 0) {
 
-        res.render('meals', { mealsData, user })
-    } catch (error) {
-        console.error(error)
-        res.status(500).send('Error fetching data from APIs.')
-    }
-})
-
-app.post('/meals', async (req, res) => {
-  const query = req.body.query
+  }
   try {
-    const mealsResponse = await axios.get(`https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`)
-    const mealsData = mealsResponse.data.meals
-    res.render('meals', { mealsData })
-  }
-  catch (error) {
-    console.error(error)
-    res.status(500).send('Error fetching data from APIs.')
+      const mealsResponse = await axios.get(`https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`)
+      const mealsData = mealsResponse.data.meals
+
+      res.render('meals', { mealsData, username })
+  } catch (error) {
+      console.error(error)
+      res.status(500).send('Error fetching data from APIs.')
   }
 })
+
 
 app.get('/cocktails', async (req, res) => {
-    let user = req.user.username
     try {
-        const cocktailsResponse = await axios.get('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=martini')
+        const cocktailsResponse = await axios.get('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=martini', { timeout: 30000 })
         const cocktailsData = cocktailsResponse.data.drinks;
 
         
@@ -145,27 +166,36 @@ app.get('/cocktails', async (req, res) => {
 });
 
 app.get('/instructions/:id', async (req, res) => {
-    const recipeId = req.params.id;
-    const source = req.query.source;
-    let user = req.user.username
-    try {
-      let apiUrl;
-      if (source === 'meals') {
-        apiUrl = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${recipeId}`;
-      } else if (source === 'cocktails') {
-        apiUrl = `https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${recipeId}`;
-      } else {
-        return res.status(400).send('Invalid source.');
-      }
+  const recipeId = req.params.id
+  const source = req.query.source
+  let user = req.user
+  let username
+  if (user) {
+    username = user.username
+    UserDataController.updateViewedRecipes(username, recipeId, source)
+  } else {
+    username = null
+  }
   
-      const response = await axios.get(apiUrl);
-      const recipeData = source === 'meals' ? response.data.meals[0] : response.data.drinks[0];
-  
-      res.render('instructions', { recipe: recipeData, user });
-    } catch (error) {
-      console.error(error);
-      res.status(500).send('Error fetching recipe details.');
+  try {
+    let apiUrl;
+    if (source === 'meals') {
+      apiUrl = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${recipeId}`;
+    } else if (source === 'cocktails') {
+      apiUrl = `https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${recipeId}`;
+    } else {
+      return res.status(400).send('Invalid source.');
     }
+
+    const response = await axios.get(apiUrl);
+    const recipeData = source === 'meals' ? response.data.meals[0] : response.data.drinks[0];
+    const instructions = recipeData.strInstructions.split("STEP")
+
+    res.render('instructions', { recipe: recipeData, username });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error fetching recipe details.');
+  }
   });
 
 const PORT = process.env.PORT
