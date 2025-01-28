@@ -54,6 +54,12 @@
           <button type="submit" class="submit-btn">LogIn</button>
         </form>
         <p>Don't have an account? <a href="/login">Log In</a></p>
+      </div>
+      <% if (failure) { %> 
+        <div class="error-msg auth-error">
+          <p><%= errorMsg %></p>
+        </div>
+      <% } %>
     </div>
   </main>
 

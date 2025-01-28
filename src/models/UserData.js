@@ -6,7 +6,7 @@ const userData = new Schema({
     },
     searchHistory: [Object],
     viewedRecipes: [Object],
-    favorites: [String]
+    favorites: [Object]
 });
 
 const UserData = model('user_data', userData);

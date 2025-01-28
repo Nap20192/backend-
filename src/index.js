@@ -49,11 +49,13 @@ startDBConnection();
 console.log("dd")
 
 app.get('/login', (req, res) => {
-  res.render("login")
+  const failure = false
+  res.render("login", { failure })
 })
 
 app.get('/signup', (req, res) => {
-  res.render("signup")
+  const failure = false
+  res.render("signup", { failure })
 })
 
 app.post('/register', 
@@ -76,15 +78,16 @@ app.get('/', async (req,res)=>{
   let user = req.user
   let username
   let recipeData
+  let favoriteData
   if (user) {
     username = user.username
     recipeData = await UserDataController.getViewedRecipes(username)
-    console.log(recipeData)
-    
+    favoriteData = await UserDataController.getFavoriteRecipes(username)
+    console.log(favoriteData)
   } else {
     username = null
   }
-  res.render('home', { username, recipeData })
+  res.render('home', { username, recipeData, favoriteData })
   
 })
 
@@ -142,8 +145,11 @@ app.get('/meals', async (req, res) => {
   try {
       const mealsResponse = await axios.get(`https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`)
       const mealsData = mealsResponse.data.meals
-
-      res.render('meals', { mealsData, username })
+      if (mealsData) {
+        res.render('meals', { mealsData, username })
+      } else {
+        res.render('meals', { mealsData, username })
+      }
   } catch (error) {
       console.error(error)
       res.status(500).send('Error fetching data from APIs.')
@@ -153,7 +159,7 @@ app.get('/meals', async (req, res) => {
 
 app.get('/cocktails', async (req, res) => {
     try {
-        const cocktailsResponse = await axios.get('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=martini', { timeout: 30000 })
+        const cocktailsResponse = await axios.get('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=martini', { timeout: 60000 })
         const cocktailsData = cocktailsResponse.data.drinks;
 
         
@@ -164,14 +170,64 @@ app.get('/cocktails', async (req, res) => {
     }
 });
 
-app.get('/instructions/:id', async (req, res) => {
-  const recipeId = req.params.id
-  const source = req.query.source
+
+
+app.get('/checkfavorite', async (req, res) => {
+  const recipeId = req.query.recipeId
   let user = req.user
   let username
   if (user) {
     username = user.username
-    UserDataController.updateViewedRecipes(username, recipeId, source)
+    let isFavorite = await UserDataController.checkFavoriteRecipe(username, recipeId)
+    res.json({isFavorite: isFavorite})
+  } else {
+    username = null
+    res.status(400).json({ success: false});
+  }
+})
+
+app.post('/addfavorite', async (req, res) => {
+  const recipeId = req.body.recipeId
+  const source = req.body.type
+  let user = req.user
+  let username
+  if (user) {
+    username = user.username
+    await UserDataController.updateFavoriteRecipes(username, recipeId, source)
+    res.status(200).json({ success: true});
+  } else {
+    username = null
+    res.status(400).json({ success: false});
+  }
+  
+})
+
+app.post('/removefavorite', async (req, res) => {
+  const recipeId = req.body.recipeId
+  let user = req.user
+  let username
+  if (user) {
+    username = user.username
+    await UserDataController.removeFavoriteRecipes(username, recipeId)
+    res.status(200).json({ success: true});
+  } else {
+    username = null
+    res.status(400).json({ success: false});
+  }
+  
+
+})
+
+app.get('/instructions/:id', async (req, res) => {
+  const recipeId = req.params.id
+  const source = req.query.source
+  let isFavorite = false
+  let user = req.user
+  let username
+  if (user) {
+    username = user.username
+    await UserDataController.updateViewedRecipes(username, recipeId, source)
+    isFavorite = await UserDataController.checkFavoriteRecipe(username, recipeId)
   } else {
     username = null
   }
@@ -190,12 +246,12 @@ app.get('/instructions/:id', async (req, res) => {
     const recipeData = source === 'meals' ? response.data.meals[0] : response.data.drinks[0];
     const instructions = recipeData.strInstructions.split("STEP")
 
-    res.render('instructions', { recipe: recipeData, username });
+    res.render('instructions', { recipe: recipeData, username, isFavorite, recipeId, source });
   } catch (error) {
     console.error(error);
     res.status(500).send('Error fetching recipe details.');
   }
-  });
+});
 
 const PORT = process.env.PORT
 

@@ -19,14 +19,18 @@ class AuthController {
             const { username, password } = req.body;
             console.log(`Login attempt: ${username}`);
             const candidate = await User.findOne({ username });
+            const failure = true
+            let errorMsg
             if (!candidate) {
                 console.error(`User not found: ${username}`);
-                return res.status(400).json({ message: "User not found" });
+                errorMsg = 'User not found. Try signing up.'
+                return res.render('login', { failure, errorMsg })
             }
             const valid = bcrypt.compareSync(password, candidate.password);
             if (!valid) {
                 console.error(`Invalid password for user: ${username}`);
-                return res.status(400).json({ message: "Invalid password" });
+                errorMsg = 'Invalid password.'
+                return res.render('login', { failure, errorMsg })
             }
             const token = generateAccessToken(candidate._id, candidate.username,candidate.role);
             const idString = candidate._id.toString(); 
@@ -56,9 +60,13 @@ class AuthController {
             
             const candidate = await User.findOne({ username });
 
+            const failure = true
+            let errorMsg
+
             if (candidate) {
                 console.error(`User already exists: ${username}`);
-                return res.status(400).json({ message: "User already exists" });
+                errorMsg = 'User already exists.'
+                return res.render('signup', { failure, errorMsg })
             }
             const hashPassword = bcrypt.hashSync(password, 7);
             let user;

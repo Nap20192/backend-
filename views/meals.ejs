@@ -50,23 +50,32 @@
     <form action="meals" method="GET">
       <input class="search-input" type="text "  type="submit" name="query" >
     </form>
+    
+    
   </div>
   <main>
     <div class="container">
       <h1 class="text-center my-4">Meal Recipes</h1>
       <div class="row">
-        <% mealsData.forEach(meal => { %>
-          <div class="col-md-4 mb-4">
-            <div class="card">
-              <img src="<%= meal.strMealThumb %>" class="card-img-top" alt="<%= meal.strMeal %>">
-              <div class="card-body">
-                <h5 class="card-title"><%= meal.strMeal %></h5>
-                <p class="card-text"><%= meal.strInstructions.substring(0, 100) %>...</p>
-                <a href="/instructions/<%= meal.idMeal %>?source=meals" class="btn">View Recipe</a>
+        <% if (mealsData === null) { %> 
+          <div class="error-msg">
+            <p>Couldn't find anything.</p>
+          </div>
+        <% } else {%>
+          <% mealsData.forEach(meal => { %>
+            <div class="col-md-4 mb-4">
+              <div class="card">
+                <img src="<%= meal.strMealThumb %>" class="card-img-top" alt="<%= meal.strMeal %>">
+                <div class="card-body">
+                  <h5 class="card-title"><%= meal.strMeal %></h5>
+                  <p class="card-text"><%= meal.strInstructions.substring(0, 100) %>...</p>
+                  <a href="/instructions/<%= meal.idMeal %>?source=meals" class="btn">View Recipe</a>
+                </div>
               </div>
             </div>
-          </div>
-        <% }) %>
+          <% }) %>
+          <% } %>
+        
       </div>
     </div>
   </main>
