@@ -18,17 +18,19 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" href="/">Weather</a>
+            <a class="nav-link" aria-current="page" href="/weather">Weather</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/meals">Meals</a>
+            <a class="nav-link" href="/meals">Meals</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/cocktails">Cocktails</a>
           </li>
+
         </ul>
+        <a href="/signup" class="nav-link"><button class="submit-btn">Sing Up</button></a>
       </div>
     </div>
   </nav>
@@ -37,8 +39,9 @@
   </div>
   <main>
     <div class="container">
+      
       <div class="login-container">
-        <h1 class="form-name">LogIn</h1>
+        <h1 class="form-name">Log In</h1>
     
         <form action="login" method="POST">
           <div class="form-group">
@@ -49,9 +52,15 @@
             <label for="username">Password</label>
             <input type="text" name="password" id="password">
           </div>
-          <button type="submit" class="submit-btn">LogIn</button>
+          <button type="submit" class="submit-btn">Log In</button>
         </form>
         <p>Don't have an account? <a href="/signup">Sign Up</a></p>
+    </div>
+    <% if (failure) { %> 
+      <div class="error-msg auth-error">
+        <p><%= errorMsg %></p>
+      </div>
+    <% } %>
     </div>
   </main>
 

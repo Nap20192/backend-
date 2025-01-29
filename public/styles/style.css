@@ -135,7 +135,7 @@ input {
 
 .login-container {
   margin: 0 auto;
-  width: 300px;
+  width: 400px;
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 25px;
@@ -155,6 +155,11 @@ input {
   text-align: center;
 }
 
+.login-container p {
+  margin-bottom: 0;
+  margin-top: 10px;
+}
+
 .form-group input {
   width: 100%;
 }
@@ -172,4 +177,55 @@ input {
 
 .submit-btn:hover {
   background-color: rgb(28, 28, 28)
+}
+
+.fav-btn {
+  border: none;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.nothing-paragraph {
+  font-style: italic;
+  text-align: center;
+}
+
+svg {
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 0;
+}
+
+
+#emptyHeart {
+  stroke: rgb(255, 81, 81);
+
+}
+
+.faved {
+  fill: rgb(255, 81, 81);
+}
+
+
+#rayGroup {
+  display: none;
+}
+
+.error-msg {
+  background-color: rgb(255, 153, 153);
+  color: rgb(255, 0, 0);
+  border-radius: 20px;
+  margin: 0 auto;
+  width: 70%;
+  padding: 20px;
+  text-align: center;
+}
+
+.error-msg p {
+  margin: 0;
+}
+
+.auth-error {
+  margin-top: 10px;
+  width: 400px;
 }
