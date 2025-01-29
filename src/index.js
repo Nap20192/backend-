@@ -234,12 +234,67 @@ app.post('/removefavorite', async (req, res) => {
 
 app.get('/admin', (req, res) => {
   let username = req.user.username
-  if(req.user.role === 'admin'){
+  if(req.user.role == 'admin'){
     res.render('admin',{username})
   } else {
     res.status(403).send('You are not an admin')
   }
 })
+
+
+app.put('/admin/:userId', async (req, res) => {
+  try {
+      const { userId } = req.params;
+      const updateData = req.body;
+
+      const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true });
+
+      if (!updatedUser) {
+          return res.status(404).json({ message: "User not found" });
+      }
+      const admin = await Admin.findById(req.adminId);
+      if (admin) {
+          admin.history.push({
+              username: updatedUser.username,
+              date: new Date(),
+              method: "UPDATE"
+          });
+          await admin.save();
+      }
+
+      res.status(200).json({ message: "User updated successfully", updatedUser });
+  } catch (error) {
+      res.status(500).json({ message: "Error updating user", error: error.message });
+  }
+});
+
+app.delete('/admin/:userId', async (req, res) => {
+  console.log("delete")
+  try {
+      const { userId } = req.params;
+      console.log(`user ${userId}`)
+      const userToDelete = await User.findById(userId);
+      console.log(userToDelete)
+      if (!userToDelete) {
+          return res.status(404).json({ message: "User not found" });
+      }
+      await User.findByIdAndDelete(userId);
+      let adminId = req.user.id
+      const admin = await Admin.findById(adminId);
+      if (admin) {
+          admin.history.push({
+              username: userToDelete.username,
+              date: new Date(),
+              method: "DELETE"
+          });
+          await admin.save();
+      }
+
+      res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+      res.status(500).json({ message: "Error deleting user", error: error.message });
+  }
+});
 
 app.get('/instructions/:id', async (req, res) => {
   const recipeId = req.params.id

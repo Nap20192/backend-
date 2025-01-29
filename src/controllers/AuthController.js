@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import User from '../models/User.js';
+import { User, Admin } from '../models/User.js';
 import jwt from 'jsonwebtoken';
 
 
@@ -18,7 +18,9 @@ class AuthController {
         try {
             const { username, password } = req.body;
             console.log(`Login attempt: ${username}`);
-            const candidate = await User.findOne({ username });
+            const admin = await Admin.findOne({ username });
+            const ordinary = await User.findOne({ username });
+            let candidate = admin || ordinary;
             const failure = true
             let errorMsg
             if (!candidate) {
@@ -71,17 +73,15 @@ class AuthController {
             const hashPassword = bcrypt.hashSync(password, 7);
             let user;
             if (username === "admin") {
-                user = new User({ username, password: hashPassword, role: "admin" });
+                user = new Admin({ username, password: hashPassword, role: "admin" });
             } else {
                 user = new User({ username, password: hashPassword, role: "ordinary mortal" });
             }
             
             await user.save();
 
-            const token = generateAccessToken(user._id, user.username);
-
+            const token = generateAccessToken(user._id, user.username,user.role);
             res.cookie('Access', token, { httpOnly: true, maxAge:24*60*60*1000 });
-            
             return res.json({token,user})
         } catch (err) {
             console.error('Error during registration:', err);
