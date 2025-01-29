@@ -10,6 +10,8 @@ import mongoose from 'mongoose'
 import cookieParser from 'cookie-parser'
 import { body } from 'express-validator';
 import authMiddleware from './middleware/AuthMiddleware.js'
+import https from 'https'
+import cloudscraper from 'cloudscraper'
 
 dotenv.config();
 const require = createRequire(import.meta.url)
@@ -157,17 +159,32 @@ app.get('/meals', async (req, res) => {
 })
 
 
+const proxy = {
+  host: '115.241.63.10',
+  port: 8888
+};
 app.get('/cocktails', async (req, res) => {
-    try {
-        const cocktailsResponse = await axios.get('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=martini', { timeout: 60000 })
-        const cocktailsData = cocktailsResponse.data.drinks;
+  const query = req.query.query ? req.query.query : '';
+  const queryReceiver = 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s=';
+  let user = req.user;
+  let username = user ? user.username : null;
 
-        
-        res.render('cocktails', { cocktailsData, user });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error fetching data from CocktailDB.');
-    }
+  if (user) {
+      UserDataController.updateSearchHistory(username, queryReceiver, query);
+  }
+
+  try {
+      const cocktailsResponse = await axios.get('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=martini', {
+        proxy: proxy
+    })
+
+      const cocktailsData = cocktailsResponse.drinks; 
+      res.render('cocktails', { cocktailsData, username });
+
+  } catch (error) {
+      console.error("Error fetching data from API:", error.message);
+      res.status(500).send('Error fetching data from APIs.');
+  }
 });
 
 
