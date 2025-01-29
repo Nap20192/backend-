@@ -26,11 +26,20 @@
             <a class="nav-link" href="/meals">Meals</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/cocktails">Cocktails</a>
+            <a class="nav-link" href="/beer">Beer</a>
           </li>
 
         </ul>
-        <a href="/signup" class="nav-link"><button class="submit-btn">Sing Up</button></a>
+        <% if (username) { %>
+          <p class="nav-link" style="margin-right: 10px; margin-bottom: 0;"><%= username %></p>
+          <form action="logout" method="POST">
+            <button class="submit-btn" type="submit">Log Out</button>
+          </form>
+        <% } else  { %>
+          <a href="/login" class="nav-link"><button class="submit-btn">Log In</button></a>
+          
+        <% }%>
+        
       </div>
     </div>
   </nav>
