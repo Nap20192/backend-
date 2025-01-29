@@ -70,21 +70,27 @@
           </div>
         </div>
       </nav>
+      <div class="main">
+        <div class="panel">
+          <h1>Admin Panel</h1>
 
-      <h1>Admin Panel</h1>
-
-      <h2>Users List</h2>
-      <table border="0">
-          <thead>
-              <tr>
-                  <th>Username</th>
-                  <th>Role</th>
-                  <th>Actions</th>
-              </tr>
-          </thead>
-          <tbody id="users-table">
-          </tbody>
-      </table>
+          <h2>Users List</h2>
+          <table border="0">
+              <thead>
+                <div>
+                  <tr class="table-row">
+                      <th>Username</th>
+                      <th>Role</th>
+                      <th>Actions</th>
+                  </tr>
+                
+              </thead>
+              <tbody id="users-table">
+              </tbody>
+        </table>
+        </div>
+    </div>
+      
   
       <script>
           async function fetchUsers() {
@@ -96,6 +102,7 @@
                   usersTable.innerHTML = '';
                   users.forEach(user => {
                       const row = document.createElement('tr');
+                      row.classList.add('table-row')
                       row.innerHTML = `
                           <td><input type="text" value="${user.username}" id="username-${user._id}" /></td>
                             <td><input type="text" value="${user.role}" id="role-${user._id}" /></td>
