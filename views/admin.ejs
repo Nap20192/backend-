@@ -95,7 +95,7 @@
       <script>
           async function fetchUsers() {
               try {
-                  const response = await fetch('http://localhost:3000/getUsers');
+                  const response = await fetch('getUsers');
                   const users = await response.json();
   
                   const usersTable = document.getElementById('users-table');
