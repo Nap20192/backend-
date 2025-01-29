@@ -2,6 +2,8 @@
 
 This application provides weather information based on your location, meal recipes, and a photo related to the weather, beer information. It uses several APIs, including OpenWeatherMap, Unsplash, and ThemealDB, Punk API to retrieve and display the information.
 
+[Deployed project link:](https://backend-148t.onrender.com/)
+
 ## Users for testing the App
 #### Admins
 - username: Rakhat Lucum   password: lucum
@@ -141,3 +143,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [OpenWeatherMap API Docs](https://openweathermap.org/api)
 - [Unsplash API Docs](https://unsplash.com/documentation)
 - [ThemealDB API Docs](https://www.themealdb.com/api.php)
+- [Punk API Docs](https://github.com/alxiw/punkapi?ref=public_apis)
