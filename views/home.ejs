@@ -26,7 +26,7 @@
             <a class="nav-link" href="/meals">Meals</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/cocktails">Cocktails</a>
+            <a class="nav-link" href="/beer">Beer</a>
           </li>
 
         </ul>
@@ -48,72 +48,101 @@
     <h1>Find Recipe</h1>
 
     <form action="meals" method="GET">
-      <input class="search-input" type="text "  type="submit" name="query" >
+      <input class="search-input" type="text" name="query">
     </form>
   </div>
+  
   <main>
     <div class="container">
       <% if (username) { %>
-        <div class="container">
-        <h1 class="text-center my-4">View History</h1>
-        <% if (recipeData) { %>
-          <div class="row">
-            
-              <% recipeData.forEach(recipe => { %>
-                <div class="col-md-4 mb-4">
-                  <div class="card">
-                    <img src="<%= recipe.strMealThumb || recipe.strDrinkThumb %>" class="card-img-top" alt="<%= recipe.strMeal || recipe.strDrink %>">
-                    <div class="card-body">
-                      <h5 class="card-title"><%= recipe.strMeal || recipe.strDrink %></h5>
-                      <p class="card-text"><%= recipe.strInstructions.substring(0, 100) %>...</p>
-                      <a href="/instructions/<%= recipe.idMeal || recipe.idDrink %>?source=meals" class="btn">View Recipe</a>
-                    </div>
-                  </div>
-                </div>
-                <% }) %>
-              </div>
-              
-            <% } else { %>
-              <p class="nothing-paragraph">Browse the website and something will appear here.</p>
-        <% } %>
-      </div>
-      <div class="container">
-        <h1 class="text-center my-4">Favorites</h1>
-        <% if (favoriteData) { %>
-          
-          <div class="row">
-            
-              <% favoriteData.forEach(favorite => { %>
-                <div class="col-md-4 mb-4">
-                  <div class="card">
-                    <img src="<%= favorite.strMealThumb || favorite.strDrinkThumb %>" class="card-img-top" alt="<%= favorite.strMeal || favorite.strDrink %>">
-                    <div class="card-body">
-                      <h5 class="card-title"><%= favorite.strMeal || favorite.strDrink %></h5>
-                      <p class="card-text"><%= favorite.strInstructions.substring(0, 100) %>...</p>
-                      <a href="/instructions/<%= favorite.idMeal || favorite.idDrink %>?source=meals" class="btn">View Recipe</a>
-                    </div>
-                  </div>
-                </div>
-                <% }) %>
-              </div>
-              
-            <% } else { %>
-              <p class="nothing-paragraph">Browse the website and something will appear here.</p>
-        <% } %>
-      </div>    
-          
-        <% } else { %>
-              <p class="nothing-paragraph"><a href="login">Log In</a> or <a href="singup">Sign Up</a> to see personalized content</p>
-        <% } %>
-        
-      
 
+        <!-- History Section -->
+        <div class="container">
+          <h1 class="text-center my-4">View History</h1>
+          <% if (recipeData) { %>
+            <div class="row">
+              <% recipeData.forEach(recipe => { %>
+                <% if (recipe.strMeal) { %>
+                  <div class="col-md-4 mb-4">
+                    <div class="card">
+                      <img src="<%= recipe.strMealThumb ? recipe.strMealThumb : `https://punkapi.online/v3/images/${recipe.image}` %>" class="img-fluid" alt="<%= recipe.strMeal || '' %>">
+                      <div class="card-body">
+                        <h5 class="card-title"><%= recipe.strMeal || recipe.name %></h5>
+                        <p class="card-text">
+                          <%= (recipe.strInstructions ? recipe.strInstructions.substring(0, 100) : 
+                               (recipe.description ? recipe.description.substring(0, 100) : "No instructions available.")) %>...
+                        </p>
+                        <a href="/instructions/<%= recipe.idMeal || recipe.idDrink %>?source=meals" class="btn">View Recipe</a>
+                      </div>
+                    </div>
+                  </div>
+                <% } else { %>
+                  <div class="col-md-4 mb-4">
+                    <div class="card">
+                      <div class="card-body">
+                        <h5 class="card-title"><b><%= recipe.name %></b></h5>
+                        <p class="card-text"><%= recipe.tagline %></p>
+                        <p class="card-text">Description: <i><%= recipe.description.substring(0, 100) %>...</i></p>
+                        <p class="card-text">First brewed: <%= recipe.first_brewed %></p>
+                        <a href="/instructions/<%= recipe.id %>?source=beer" class="btn">View More</a>
+                      </div>
+                    </div>
+                  </div>
+                <% } %>
+              <% }) %>
+            </div>
+          <% } else { %>
+            <p class="nothing-paragraph">Browse the website and something will appear here.</p>
+          <% } %>
+        </div>
+
+        <!-- Favorites Section -->
+        <div class="container">
+          <h1 class="text-center my-4">Favorites</h1>
+          <% if (favoriteData) { %>
+            <div class="row">
+              <% favoriteData.forEach(favorite => { %>
+                <% if (favorite.strMeal) { %>
+                  <div class="col-md-4 mb-4">
+                    <div class="card">
+                      <img src="<%= favorite.strMealThumb ? favorite.strMealThumb : `https://punkapi.online/v3/images/${favorite.image}` %>" class="img-fluid" alt="<%= favorite.strMeal || '' %>">
+                      <div class="card-body">
+                        <h5 class="card-title"><%= favorite.strMeal || favorite.name %></h5>
+                        <p class="card-text">
+                          <%= (favorite.strInstructions ? favorite.strInstructions.substring(0, 100) : 
+                               (favorite.description ? favorite.description.substring(0, 100) : "No instructions available.")) %>...
+                        </p>
+                        <a href="/instructions/<%= favorite.idMeal || favorite.idDrink %>?source=meals" class="btn">View Recipe</a>
+                      </div>
+                    </div>
+                  </div>
+                <% } else { %>
+                  <div class="col-md-4 mb-4">
+                    <div class="card">
+                      <div class="card-body">
+                        <h5 class="card-title"><b><%= favorite.name %></b></h5>
+                        <p class="card-text"><%= favorite.tagline %></p>
+                        <p class="card-text">Description: <i><%= favorite.description.substring(0, 100) %>...</i></p>
+                        <p class="card-text">First brewed: <%= favorite.first_brewed %></p>
+                        <a href="/instructions/<%= favorite.id %>?source=beer" class="btn">View More</a>
+                      </div>
+                    </div>
+                  </div>
+                <% } %>
+              <% }) %>
+            </div>
+          <% } else { %>
+            <p class="nothing-paragraph">Browse the website and something will appear here.</p>
+          <% } %>
+        </div>
+
+      <% } else { %>
+        <p class="nothing-paragraph"><a href="/login">Log In</a> or <a href="/signup">Sign Up</a> to see personalized content</p>
+      <% } %>
       
     </div>
   </main>
 
-
-  
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
 </body>

@@ -87,13 +87,13 @@ class UserDataController {
           let source = recipe.type
           if (source === 'meals') {
             apiUrl = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${recipeId}`;
-          } else if (source === 'cocktails') {
-            apiUrl = `https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${recipeId}`;
+          } else if (source === 'beer') {
+            apiUrl = `https://punkapi.online/v3/beers/${recipeId}`;
           } else {
             continue
           }
           const response = await axios.get(apiUrl);
-          const recipeData = source === 'meals' ? response.data.meals[0] : response.data.drinks[0];
+          const recipeData = source === 'meals' ? response.data.meals[0] : response.data;
           recipes.push(recipeData)
         }
         

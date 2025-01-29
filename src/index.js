@@ -84,8 +84,8 @@ app.get('/', async (req,res)=>{
   if (user) {
     username = user.username
     recipeData = await UserDataController.getViewedRecipes(username)
+    
     favoriteData = await UserDataController.getFavoriteRecipes(username)
-    console.log(favoriteData)
   } else {
     username = null
   }
@@ -163,23 +163,28 @@ const proxy = {
   host: '115.241.63.10',
   port: 8888
 };
-app.get('/cocktails', async (req, res) => {
+app.get('/beer', async (req, res) => {
   const query = req.query.query ? req.query.query : '';
-  const queryReceiver = 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s=';
+  const queryReceiver = 'https://punkapi.online/v3/beers/';
   let user = req.user;
   let username = user ? user.username : null;
+  let beerResponse
 
   if (user) {
       UserDataController.updateSearchHistory(username, queryReceiver, query);
   }
 
   try {
-      const cocktailsResponse = await axios.get('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=martini', {
-        proxy: proxy
-    })
+    if (query) {
+      beerResponse = await axios.get(`https://punkapi.online/v3/beers?beer_name=${query}`)
+    } else {
+      beerResponse = await axios.get('https://punkapi.online/v3/beers?page=1')
+    }
+      
 
-      const cocktailsData = cocktailsResponse.drinks; 
-      res.render('cocktails', { cocktailsData, username });
+      const beerData = beerResponse.data; 
+      console.log(beerData)
+      res.render('beer', { beerData, username });
 
   } catch (error) {
       console.error("Error fetching data from API:", error.message);
@@ -253,15 +258,14 @@ app.get('/instructions/:id', async (req, res) => {
     let apiUrl;
     if (source === 'meals') {
       apiUrl = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${recipeId}`;
-    } else if (source === 'cocktails') {
-      apiUrl = `https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${recipeId}`;
+    } else if (source === 'beer') {
+      apiUrl = `https://punkapi.online/v3/beers/${recipeId}`;
     } else {
       return res.status(400).send('Invalid source.');
     }
 
     const response = await axios.get(apiUrl);
-    const recipeData = source === 'meals' ? response.data.meals[0] : response.data.drinks[0];
-    const instructions = recipeData.strInstructions.split("STEP")
+    const recipeData = source === 'meals' ? response.data.meals[0] : response.data;
 
     res.render('instructions', { recipe: recipeData, username, isFavorite, recipeId, source });
   } catch (error) {
