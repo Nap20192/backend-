@@ -8,6 +8,36 @@
     <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
+    <style>
+        button {
+    padding: 5px 10px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.update-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.update-btn:hover {
+    background-color: #45a049;
+}
+
+.delete-btn {
+    background-color: red;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: darkred;
+}
+
+
+    </style>
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
           <a class="navbar-brand" href="/">Lookoom</a>
@@ -44,7 +74,7 @@
       <h1>Admin Panel</h1>
 
       <h2>Users List</h2>
-      <table border="1">
+      <table border="0">
           <thead>
               <tr>
                   <th>Username</th>
@@ -53,12 +83,10 @@
               </tr>
           </thead>
           <tbody id="users-table">
-              <!-- Users will be inserted here dynamically -->
           </tbody>
       </table>
   
       <script>
-          // Fetch all users and display in table
           async function fetchUsers() {
               try {
                   const response = await fetch('http://localhost:3000/getUsers');
@@ -70,12 +98,7 @@
                       const row = document.createElement('tr');
                       row.innerHTML = `
                           <td><input type="text" value="${user.username}" id="username-${user._id}" /></td>
-                          <td>
-                              <select id="role-${user._id}">
-                                  <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Admin</option>
-                                  <option value="user" ${user.role === 'user' ? 'selected' : ''}>User</option>
-                              </select>
-                          </td>
+                            <td><input type="text" value="${user.role}" id="role-${user._id}" /></td>
                           <td>
                               <button onclick="updateUser('${user._id}')">Update</button>
                               <button onclick="deleteUser('${user._id}')" style="background-color: red; color: white;">Delete</button>
@@ -89,18 +112,22 @@
           }
   
           async function updateUser(userId) {
+            alert(userId)
+            alert('update user');
               const username = document.getElementById(`username-${userId}`).value;
               const role = document.getElementById(`role-${userId}`).value;
-  
-              const response = await fetch(`/admin/users/${userId}`, {
-                  method: 'PUT',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ username, role })
-              });
+              alert(typeof username);
+              const response = await fetch(`/admin/${userId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'  
+        },
+        body: JSON.stringify({ username, role })  
+    });
   
               const result = await response.json();
               alert(result.message);
-              fetchUsers(); // Refresh the user list
+              fetchUsers();
           }
   
           async function deleteUser(userId) {

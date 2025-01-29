@@ -72,7 +72,7 @@ class AuthController {
             }
             const hashPassword = bcrypt.hashSync(password, 7);
             let user;
-            if (username === "admin") {
+            if (username === "admin" || username === "Rakhat Lucum" || username === "Nikolay Kogay") {
                 user = new Admin({ username, password: hashPassword, role: "admin" });
             } else {
                 user = new User({ username, password: hashPassword, role: "ordinary mortal" });
