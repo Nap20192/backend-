@@ -82,7 +82,7 @@ class AuthController {
 
             const token = generateAccessToken(user._id, user.username,user.role);
             res.cookie('Access', token, { httpOnly: true, maxAge:24*60*60*1000 });
-            return res.json({token,user})
+            res.redirect('/')
         } catch (err) {
             console.error('Error during registration:', err);
             res.status(500).json({ message: "Internal server error" });
