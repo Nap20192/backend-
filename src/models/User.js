@@ -1,8 +1,6 @@
-import { Schema,model } from "mongoose";
-const LikedSchema = new Schema({
+import { Schema, model } from "mongoose";
 
-})
-const userSchema = new Schema({
+const AdminSchema = new Schema({
     username: {
         type: String,
         required: true
@@ -11,17 +9,44 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    role:{
-        type:String,
-        required:true
-    },
-    creationDate: {
+    role: {
         type: String,
         required: true
     },
-    updateDate:[String]
+    history: [
+        {
+            username: {
+                type: String,
+                required: true
+            },
+            date: {
+                type: Date, 
+                required: true
+            },
+            method: {
+                type: String,
+                required: true
+            }
+        }
+    ]
 });
 
-const User = model('User', userSchema);
+const UserSchema = new Schema({
+    username: {
+        type: String,
+        required: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    role: {
+        type: String,
+        required: true
+    },
+});
 
-export default User
+const Admin = model('Admin', AdminSchema);
+const User = model('User', UserSchema);
+
+export default { Admin, User };

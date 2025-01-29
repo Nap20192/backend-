@@ -11,7 +11,6 @@ import cookieParser from 'cookie-parser'
 import { body } from 'express-validator';
 import authMiddleware from './middleware/AuthMiddleware.js'
 import https from 'https'
-import cloudscraper from 'cloudscraper'
 
 dotenv.config();
 const require = createRequire(import.meta.url)
@@ -231,8 +230,15 @@ app.post('/removefavorite', async (req, res) => {
     username = null
     res.status(400).json({ success: false});
   }
-  
+})
 
+app.get('/admin', (req, res) => {
+  let username = req.user.username
+  if(req.user.role === 'admin'){
+    res.render('admin',{username})
+  } else {
+    res.status(403).send('You are not an admin')
+  }
 })
 
 app.get('/instructions/:id', async (req, res) => {

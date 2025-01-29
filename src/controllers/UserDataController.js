@@ -1,6 +1,6 @@
-import User from '../models/User.js';
 import UserData from '../models/UserData.js';
 import axios from 'axios'
+import User from '../models/User.js';
 
 class UserDataController {
     async createUserData(username) {
