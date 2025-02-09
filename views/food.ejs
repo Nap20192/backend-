@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Post</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+</head>
+<body>
+    <% include('partials/navbar') %>
+    <main>
+        <h1>Add Food</h1>
+        <form action="/add-food" method="POST">
+            <label for="name">Food Name:</label>
+            <input type="text" id="name" name="name" required>
+            <br>
+            <label for="description1">Description in English</label>
+            <input type="text" id="description1" name="description1" required>
+            <br>
+            <label for="description2">Description in Russian</label>
+            <input type="text" id="description2" name="description2" required>
+            <br>
+            <button type="submit">Add Food</button>
+        </form>
+    </main>
+    
+</body>
+</html>

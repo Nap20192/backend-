@@ -364,11 +364,14 @@ app.put('/admin/:userId', updateUser);
 
 app.delete('/admin/:userId',deleteUser);
 
-app.get('/instructions/:id', async (req, res) => {
+app.get('/instructions/:id/:lang', async (req, res) => {
   const recipeId = req.params.id
+  const lang = req.params.lang
   const source = req.query.source
   let isFavorite = false
   let user = req.user
+  let page = { ...pageMain }
+  page.infoBtn = "View full recipe"
   let username
   if (user) {
     username = user.username
@@ -389,7 +392,19 @@ app.get('/instructions/:id', async (req, res) => {
     }
 
     const response = await axios.get(apiUrl);
-    const recipeData = source === 'meals' ? response.data.meals[0] : response.data;
+    let recipeData = source === 'meals' ? response.data.meals[0] : response.data;
+
+    if (lang != "en") {
+      for (let i = 0; i < beerData.length; i++) {
+        const { name, tagline, description, first_brewed } = beerData[i]
+        recipeData = await translate(recipeData, {from: 'en', to: lang})
+      }
+      page = await translate(page, {from: 'en', to: lang })
+      page.loginBtn = "Войти"
+      page.logoutBtn = "Выйти"  
+      page.infoBtn = "Посмотреть весь рецепт"
+    }
+    page.lang = lang
 
     res.render('instructions', { recipe: recipeData, username, isFavorite, recipeId, source });
   } catch (error) {

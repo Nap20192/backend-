@@ -25,8 +25,8 @@ class FoodController {
         try {
             const authorId = req.user.id;
             const authorName = req.user.username;
-            const { name, description, image } = req.body;
-            const food = new Food({ name, description, authorId, authorName, image });
+            const { name, descriptionRU,descriptionEN, image } = req.body;
+            const food = new Food({ name, descriptionRU,descriptionEN, authorId, authorName, image });
             await food.save();
             console.log(`Food ${name} successfully added!`);
             return res.json(food);
@@ -39,8 +39,8 @@ class FoodController {
     async updateFood(req, res) {
         try {
             const { id } = req.params;
-            const { name, description, image } = req.body;
-            const food = await Food.findByIdAndUpdate(id, { name, description, image }, { new: true });
+            const { name, descriptionRU,descriptionEN, image } = req.body;
+            const food = await Food.findByIdAndUpdate(id, { name,descriptionRU,descriptionEN, image }, { new: true });
             console.log(`Food ${name} successfully updated!`);
             return res.json(food);
         } catch (err) {

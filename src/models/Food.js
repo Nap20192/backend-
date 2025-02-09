@@ -1,19 +1,23 @@
-import {Model,Schema} from 'mongoose'
-import { User } from './User';
-const FoodSchema = new Schema({
+import mongoose from 'mongoose';
+
+const FoodSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
     },
-    authorId:{
-        type: User.id,
+    authorId: {
+        type: String,
         required: true
     },
-    authorName:{
-        type: User.username,
+    authorName: {
+        type: String,
         required: true
     },
-    description: {
+    descriptionRU: {
+        type: String,
+        required: true
+    },
+    descriptionEN: {
         type: String,
         required: true
     },
@@ -21,4 +25,11 @@ const FoodSchema = new Schema({
         type: String,
         required: true
     },
+    timestamp: {
+        type: Date,
+        default: Date.now
+    }
 });
+
+const Food = mongoose.model('Food', FoodSchema);
+export default Food;
