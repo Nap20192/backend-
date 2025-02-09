@@ -77,7 +77,7 @@
                 <div class="card-body">
                   <h5 class="card-title"><%= meal.strMeal %></h5>
                   <p class="card-text"><%= meal.strInstructions.substring(0, 100) %>...</p>
-                  <a href="/instructions/<%= meal.idMeal %>?source=meals" class="btn"><%= page.infoBtn %></a>
+                  <a href="/instructions/<%= meal.idMeal %>/<%= page.lang %>?source=meals" class="btn"><%= page.infoBtn %></a>
                 </div>
               </div>
             </div>
