@@ -96,15 +96,51 @@ app.get('/', async (req,res)=>{
   let username
   let recipeData
   let favoriteData
+  let createdData
+  let page = {...pageMain}
   if (user) {
     username = user.username
     recipeData = await UserDataController.getViewedRecipes(username)
     
     favoriteData = await UserDataController.getFavoriteRecipes(username)
+
+    let response = await axios.get(`http://localhost:3000/food`)
+    console.log(response)
+    createdData = response.data
+    console.log(createdData)
   } else {
     username = null
   }
-  res.render('home', { username, recipeData, favoriteData })
+  res.render('home', { username, recipeData, favoriteData, createdData, page })
+  
+})
+
+
+app.get('/:lang(en|ru)', async (req,res)=>{
+  let user = req.user
+  let username
+  let recipeData
+  let favoriteData
+  let createdData
+  let page = {...pageMain}
+  const lang = req.params.lang
+  if (user) {
+    username = user.username
+    recipeData = await UserDataController.getViewedRecipes(username)
+    
+    favoriteData = await UserDataController.getFavoriteRecipes(username)
+
+    let response = await axios.get(`http://localhost:3000/food`)
+    createdData = response.data
+    if (lang !== "en") {
+      page.lang = lang
+    }
+    
+    console.log(createdData)
+  } else {
+    username = null
+  }
+  res.render('home', { username, recipeData, favoriteData, createdData, page })
   
 })
 
@@ -406,7 +442,47 @@ app.get('/instructions/:id/:lang', async (req, res) => {
     }
     page.lang = lang
 
-    res.render('instructions', { recipe: recipeData, username, isFavorite, recipeId, source });
+    res.render('instructions', { recipe: recipeData, username, isFavorite, recipeId, source, page });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error fetching recipe details.');
+  }
+});
+
+
+app.get('/instructions/:id', async (req, res) => {
+  const recipeId = req.params.id
+  const lang = req.params.lang
+  const source = req.query.source
+  let isFavorite = false
+  let user = req.user
+  let page = { ...pageMain }
+  page.infoBtn = "View full recipe"
+  let username
+  if (user) {
+    username = user.username
+    await UserDataController.updateViewedRecipes(username, recipeId, source)
+    isFavorite = await UserDataController.checkFavoriteRecipe(username, recipeId)
+  } else {
+    username = null
+  }
+  
+  try {
+    let apiUrl;
+    if (source === 'meals') {
+      apiUrl = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${recipeId}`;
+    } else if (source === 'beer') {
+      apiUrl = `https://punkapi.online/v3/beers/${recipeId}`;
+    } else {
+      return res.status(400).send('Invalid source.');
+    }
+
+    const response = await axios.get(apiUrl);
+    let recipeData = source === 'meals' ? response.data.meals[0] : response.data;
+
+    
+
+    res.render('instructions', { recipe: recipeData, username, isFavorite, recipeId, source, page });
   } catch (error) {
     console.error(error);
     res.status(500).send('Error fetching recipe details.');
@@ -418,6 +494,10 @@ app.get('/food/:id', FoodController.getFoodById);
 app.post('/food', FoodController.createFood);
 app.put('/food/:id', FoodController.updateFood);
 app.delete('/food/:id', FoodController.deleteFood);
+app.get('/createPost', async (req, res) => {
+  const username = req.user.username
+  res.render('food', {username})
+})
 
 const PORT = process.env.PORT
 

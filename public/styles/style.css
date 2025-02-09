@@ -257,3 +257,32 @@ table {
 tr {
   margin-bottom: 10px; /* Adds vertical space between rows */
 }
+
+
+textarea {
+  font-size: 1rem;
+  width:80%;
+  padding: 8px;
+  color: #333;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 25px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  outline: none;
+  transition: all 0.3s ease-in-out;
+  min-height: 200px;
+}
+
+.postForm {
+  margin: 0 auto;
+  
+}
+
+.margin-bottom {
+  margin-bottom: 10px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
