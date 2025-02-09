@@ -286,3 +286,8 @@ textarea {
   display: flex;
   flex-direction: column;
 }
+
+.side-link {
+  color:rgb(114, 114, 114);
+  margin-right: 10px;
+}

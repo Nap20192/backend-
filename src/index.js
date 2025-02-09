@@ -494,7 +494,7 @@ app.get('/food/:id', FoodController.getFoodById);
 app.post('/food', FoodController.createFood);
 app.put('/food/:id', FoodController.updateFood);
 app.delete('/food/:id', FoodController.deleteFood);
-app.get('/createPost', async (req, res) => {
+app.get('/create', async (req, res) => {
   const username = req.user.username
   res.render('food', {username})
 })
