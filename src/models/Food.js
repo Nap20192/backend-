@@ -5,8 +5,12 @@ const FoodSchema = new Schema({
         type: String,
         required: true
     },
-    author:{
+    authorId:{
         type: User.id,
+        required: true
+    },
+    authorName:{
+        type: User.username,
         required: true
     },
     description: {

@@ -13,6 +13,7 @@ import authMiddleware from './middleware/AuthMiddleware.js'
 import https from 'https'
 import { updateUser, deleteUser } from './controllers/AdminController.js'
 import translate from 'translate-google'
+import FoodController from './controllers/FoodController.js'
 
 dotenv.config();
 const require = createRequire(import.meta.url)
@@ -396,6 +397,12 @@ app.get('/instructions/:id', async (req, res) => {
     res.status(500).send('Error fetching recipe details.');
   }
 });
+
+app.get('/food', FoodController.getAllFood);
+app.get('/food/:id', FoodController.getFoodById);
+app.post('/food', FoodController.createFood);
+app.put('/food/:id', FoodController.updateFood);
+app.delete('/food/:id', FoodController.deleteFood);
 
 const PORT = process.env.PORT
 

@@ -1,10 +1,19 @@
 import Food from '../models/Food.js';
 
-
 class FoodController { 
-    async getFood(req, res) {
+    async getAllFood(req, res) {
         try {
             const food = await Food.find();
+            return res.json(food);
+        } catch (err) {
+            console.error('Error during getting food:', err);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+    async getFoodById(req, res) {
+        try {
+            const { id } = req.params;
+            const food = await Food.findById(id);
             return res.json(food);
         } catch (err) {
             console.error('Error during getting food:', err);
@@ -14,8 +23,10 @@ class FoodController {
 
     async createFood(req, res) {
         try {
-            const { name, description, price, category, image } = req.body;
-            const food = new Food({ name, description, price, category, image });
+            const authorId = req.user.id;
+            const authorName = req.user.username;
+            const { name, description, image } = req.body;
+            const food = new Food({ name, description, authorId, authorName, image });
             await food.save();
             console.log(`Food ${name} successfully added!`);
             return res.json(food);
@@ -28,8 +39,8 @@ class FoodController {
     async updateFood(req, res) {
         try {
             const { id } = req.params;
-            const { name, description, price, category, image } = req.body;
-            const food = await Food.findByIdAndUpdate(id, { name, description, price, category, image }, { new: true });
+            const { name, description, image } = req.body;
+            const food = await Food.findByIdAndUpdate(id, { name, description, image }, { new: true });
             console.log(`Food ${name} successfully updated!`);
             return res.json(food);
         } catch (err) {
@@ -50,3 +61,4 @@ class FoodController {
         }
     }
 }
+export default new FoodController();
