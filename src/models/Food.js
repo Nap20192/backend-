@@ -1,5 +1,5 @@
 import {Model,Schema} from 'mongoose'
-import { User } from './user';
+import { User } from './User';
 const FoodSchema = new Schema({
     name: {
         type: String,

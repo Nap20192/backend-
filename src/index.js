@@ -12,6 +12,7 @@ import { body } from 'express-validator';
 import authMiddleware from './middleware/AuthMiddleware.js'
 import https from 'https'
 import { updateUser, deleteUser } from './controllers/AdminController.js'
+import translate from 'translate-google'
 
 dotenv.config();
 const require = createRequire(import.meta.url)
@@ -31,6 +32,19 @@ app.use(cookieParser())
 
 const API_KEY = '1d6dc3890cf79b7449306bced111270d';
 const MONGO_URI = process.env.MONGO_URI 
+
+let pageMain = {
+  beerNav: "Beer",
+  mealsNav: "Meals",
+  weatherNav: "Weather",
+  logoutBtn: "Log Out",
+  loginBtn: "Log In",
+  searchHeader: "Find Recipe",
+  infoBtn: "View More",
+  singupBtn: "Sign up",
+  langBtn: "Language",
+  lang: "en"
+};
 
 
 const startDBConnection = async () => {
@@ -130,11 +144,16 @@ app.get('/weather', async (req, res) => {
     
 });
 
-app.get('/meals', async (req, res) => {
+app.get('/meals/:lang', async (req, res) => {
+  const lang = req.params.lang
   const query = req.query.query ? req.query.query : ''
   const queryReceiver = 'https://www.themealdb.com/api/json/v1/1/search.php?s='
   let user = req.user
   let username
+  let page = { ...pageMain }
+  page.mainHeader = "Meals"
+  page.lang = lang
+
   if (user) {
     username = user.username
     UserDataController.updateSearchHistory(username, queryReceiver, query)
@@ -147,10 +166,57 @@ app.get('/meals', async (req, res) => {
   try {
       const mealsResponse = await axios.get(`https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`)
       const mealsData = mealsResponse.data.meals
+
+      if (lang != "en") {
+        console.log("Translating...")
+        for (let i = 0; i < mealsData.length; i++) {
+          const { strMeal, strInstructions } = mealsData[i]
+          mealsData[i].strMeal = await translate(strMeal.substring(0, 100), {from: 'en', to: lang})
+          mealsData[i].strInstructions = await translate(strInstructions.substring(0, 100), {from: 'en', to: lang})
+        }
+        page = await translate(page, {from: 'en', to: lang })
+        page.loginBtn = "Войти"
+        page.logoutBtn = "Выйти"  
+        page.infoBtn = "Узнать больше"
+      }
+      
+      page.lang = lang
       if (mealsData) {
-        res.render('meals', { mealsData, username })
+        res.render('meals', { mealsData, username, page })
       } else {
-        res.render('meals', { mealsData, username })
+        res.render('meals', { mealsData, username, page })
+      }
+  } catch (error) {
+      console.error(error)
+      res.status(500).send('Error fetching data from APIs.')
+  }
+})
+
+app.get('/meals', async (req, res) => {
+  const query = req.query.query ? req.query.query : ''
+  const queryReceiver = 'https://www.themealdb.com/api/json/v1/1/search.php?s='
+  let user = req.user
+  let username
+  let page = { ...pageMain }
+  page.mainHeader = "Meals"
+
+  if (user) {
+    username = user.username
+    UserDataController.updateSearchHistory(username, queryReceiver, query)
+  } else {
+    username = null
+  }
+  if (query.length > 0) {
+
+  }
+  try {
+      const mealsResponse = await axios.get(`https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`)
+      const mealsData = mealsResponse.data.meals
+      
+      if (mealsData) {
+        res.render('meals', { mealsData, username, page })
+      } else {
+        res.render('meals', { mealsData, username, page })
       }
   } catch (error) {
       console.error(error)
@@ -159,20 +225,66 @@ app.get('/meals', async (req, res) => {
 })
 
 
-const proxy = {
-  host: '115.241.63.10',
-  port: 8888
-};
+app.get('/beer/:lang', async (req, res) => {
+  const lang = req.params.lang
+  const query = req.query.query ? req.query.query : '';
+  const queryReceiver = 'https://punkapi.online/v3/beers/';
+  let user = req.user;
+  let username = user ? user.username : null;
+  let beerResponse
+  let page = { ...pageMain }
+  page.mainHeader = "Beer"
+  if (user) {
+      UserDataController.updateSearchHistory(username, queryReceiver, query);
+  }
+  
+  
+
+  try {
+    if (query) {
+      beerResponse = await axios.get(`https://punkapi.online/v3/beers?beer_name=${query}`)
+    } else {
+      beerResponse = await axios.get('https://punkapi.online/v3/beers?page=1')
+    }
+      
+
+      const beerData = beerResponse.data; 
+      if (lang != "en") {
+        for (let i = 0; i < beerData.length; i++) {
+          const { name, tagline, description, first_brewed } = beerData[i]
+          beerData[i].name = await translate(name.substring(0, 100), {from: 'en', to: lang})
+          beerData[i].tagline = await translate(tagline.substring(0, 100), {from: 'en', to: lang})
+          beerData[i].description = await translate(description.substring(0, 100), {from: 'en', to: lang})
+          beerData[i].first_brewed = await translate(first_brewed.substring(0, 100), {from: 'en', to: lang})
+        }
+        page = await translate(page, {from: 'en', to: lang })
+        page.loginBtn = "Войти"
+        page.logoutBtn = "Выйти"  
+        page.infoBtn = "Узнать больше"
+      }
+      page.lang = lang
+      console.log(beerData)
+      res.render('beer', { beerData, username, page });
+
+  } catch (error) {
+      console.error("Error fetching data from API:", error.message);
+      res.status(500).send('Error fetching data from APIs.');
+  }
+});
+
 app.get('/beer', async (req, res) => {
   const query = req.query.query ? req.query.query : '';
   const queryReceiver = 'https://punkapi.online/v3/beers/';
   let user = req.user;
   let username = user ? user.username : null;
   let beerResponse
-
+  let page = { ...pageMain }
+  page.mainHeader = "Beer"
   if (user) {
       UserDataController.updateSearchHistory(username, queryReceiver, query);
   }
+  
+  
 
   try {
     if (query) {
@@ -184,14 +296,13 @@ app.get('/beer', async (req, res) => {
 
       const beerData = beerResponse.data; 
       console.log(beerData)
-      res.render('beer', { beerData, username });
+      res.render('beer', { beerData, username, page });
 
   } catch (error) {
       console.error("Error fetching data from API:", error.message);
       res.status(500).send('Error fetching data from APIs.');
   }
 });
-
 
 
 app.get('/checkfavorite', async (req, res) => {

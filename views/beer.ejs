@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cocktails</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <link rel="stylesheet" href="styles/style.css">
+  <link rel="stylesheet" href="/styles/style.css">
 </head>
 
 <body>
@@ -20,23 +20,31 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="/weather">Weather</a>
+            <a class="nav-link" aria-current="page" href="/weather"><%= page.weatherNav %></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/meals">Meals</a>
+            <a class="nav-link" href="/meals/<%= page.lang %>"><%= page.mealsNav %></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/beer">Beer</a>
+            <a class="nav-link" href="/beer/<%= page.lang %>"><%= page.beerNav %></a>
           </li>
-
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <%= page.langBtn %>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/beer/en">en</a></li>
+              <li><a class="dropdown-item" href="/beer/ru">ru</a></li>
+            </ul>
+          </li>
         </ul>
         <% if (username) { %>
           <p class="nav-link" style="margin-right: 10px; margin-bottom: 0;"><%= username %></p>
           <form action="logout" method="POST">
-            <button class="submit-btn" type="submit">Log Out</button>
+            <button class="submit-btn" type="submit"><%= page.logoutBtn %></button>
           </form>
         <% } else  { %>
-          <a href="/login" class="nav-link"><button class="submit-btn">Log In</button></a>
+          <a href="/login" class="nav-link"><button class="submit-btn"><%= page.loginBtn %></button></a>
           
         <% }%>
         
@@ -47,7 +55,7 @@
 
   <main>
     <div class="container">
-      <h1 class="text-center my-4">Beer</h1>
+      <h1 class="text-center my-4"><%= page.mainHeader %></h1>
       <div class="row">
         <% if (beerData === null || !beerData) { %> 
           <div class="error-msg">
@@ -63,7 +71,7 @@
                   <p class="card-text"><%= beer.tagline %></p>
                   <p class="card-text">Description: <i><%= beer.description.substring(0, 100) %>...</i></p>
                   <p class="card-text">First brewed: <%= beer.first_brewed %></p>
-                  <a href="/instructions/<%= beer.id %>?source=beer" class="btn">View More</a>
+                  <a href="/instructions/<%= beer.id %>?source=beer" class="btn"><%= page.infoBtn %></a>
                 </div>
               </div>
             </div>

@@ -20,23 +20,31 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="/weather">Weather</a>
+            <a class="nav-link" aria-current="page" href="/weather"><%= page.weatherNav %></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/meals">Meals</a>
+            <a class="nav-link" href="/meals/<%= page.lang %>"><%= page.mealsNav %></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/beer">Beer</a>
+            <a class="nav-link" href="/beer/<%= page.lang %>"><%= page.beerNav %></a>
           </li>
-
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <%= page.langBtn %>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/meals/en">en</a></li>
+              <li><a class="dropdown-item" href="/meals/ru">ru</a></li>
+            </ul>
+          </li>
         </ul>
         <% if (username) { %>
           <p class="nav-link" style="margin-right: 10px; margin-bottom: 0;"><%= username %></p>
           <form action="logout" method="POST">
-            <button class="submit-btn" type="submit">Log Out</button>
+            <button class="submit-btn" type="submit"><%= page.logoutBtn %></button>
           </form>
         <% } else  { %>
-          <a href="/login" class="nav-link"><button class="submit-btn">Log In</button></a>
+          <a href="/login" class="nav-link"><button class="submit-btn"><%= page.loginBtn %></button></a>
           
         <% }%>
         
@@ -45,7 +53,7 @@
   </nav>
 
   <div class="search-container">
-    <h1>Find Recipe</h1>
+    <h1><%= page.searchHeader %></h1>
 
     <form action="meals" method="GET">
       <input class="search-input" type="text "  type="submit" name="query" >
@@ -55,7 +63,7 @@
   </div>
   <main>
     <div class="container">
-      <h1 class="text-center my-4">Meal Recipes</h1>
+      <h1 class="text-center my-4"><%= page.mainHeader %></h1>
       <div class="row">
         <% if (mealsData === null) { %> 
           <div class="error-msg">
@@ -69,7 +77,7 @@
                 <div class="card-body">
                   <h5 class="card-title"><%= meal.strMeal %></h5>
                   <p class="card-text"><%= meal.strInstructions.substring(0, 100) %>...</p>
-                  <a href="/instructions/<%= meal.idMeal %>?source=meals" class="btn">View Recipe</a>
+                  <a href="/instructions/<%= meal.idMeal %>?source=meals" class="btn"><%= page.infoBtn %></a>
                 </div>
               </div>
             </div>
