@@ -11,12 +11,19 @@ This application provides weather information based on your location, meal recip
 
 #### Non-admins
 - username: frieren   password: frieren
+- username: uo   password: uo
 
 ## Features
 
 - **Weather Information**: Retrieve the weather for a specified city using the OpenWeatherMap API.
-- **Meal Recipe**: Display a random meal recipe from ThemealDB API.
+- **Meal Recipe**: Display meal recipes from ThemealDB API.
 - **Unsplash Photo**: Fetch a photo related to the weather for the specified city using the Unsplash API.
+- **PUNK API**: Display beer information.
+- **Content Creation**: Users can create posts. Admins can also delete and edit posts.
+- **View history**: As a user browses the website, the pages they viewed get displayed on the main page.
+- **Fevorites**: As a user saves posts into favorites, the pages they favorited get displayed on the main page.
+- **Multi-language support**: The website has partial multi-language support. On all pages with created content users can change the language to see the description of a created post in a different language. /meals and /beer pages have full multi-language.
+- **REST API**: We implemented REST API that allows to access the data about all the created posts. More information in the API section.
 
 ## Technologies Used
 
@@ -111,6 +118,17 @@ To start the app:
 
 ### Admin panel
 - Admins can access a secret page on /admin that allows them to vew and manage all existing non-admin users. The admin can change their username, their rank or delete them.
+
+### Content creation
+- By loggin in and pressing on the "Create post" button, you will be able to createa new post.
+- Admins can delete and edit posts by opening them and pressing the respective buttons.
+
+
+## API
+
+## API endpoints
+**/api/food** - displayes all created posts.
+**/api/food/:id** - display information about a specific food by its id.
 
 
 ## Files and Structure
