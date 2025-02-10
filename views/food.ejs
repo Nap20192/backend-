@@ -46,7 +46,7 @@
     <div class="panel">
         <h1>Add Food</h1>
         <div class="postForm">
-            <form action="/food" method="POST">
+            <form action="/food" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="name">Food Name:</label>
                     <input class="margin-bottom" type="text" id="name" name="name" required>
@@ -64,8 +64,8 @@
 
                 <div class="form-group">
                     <label for="image">Image</label>
-                    <input class="margin-bottom" type="text" id="image" name="image" required>
-                </div>
+                    <input class="margin-bottom" type="file" id="image" name="image" >
+                  </div>
             
                 <button type="submit" class="submit-btn">Add Food</button>
             </form>

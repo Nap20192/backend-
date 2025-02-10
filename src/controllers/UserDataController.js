@@ -1,6 +1,7 @@
 import UserData from '../models/UserData.js';
 import axios from 'axios'
 import User from '../models/User.js';
+import Food from '../models/Food.js';
 
 class UserDataController {
     async createUserData(username) {
@@ -141,8 +142,16 @@ class UserDataController {
         return false
       }
     }
+    async getcreatedRecipes(username) {
+      try {
+        const food = await Food.find({ authorName:username })
+        console.log("Created recipes successfully retrieved.")
+        return food
+      } catch (err) {
+        console.error("Failed to retreive created recipes.", err)
+      }
+    }
 
-    
 }
 
 export default new UserDataController();

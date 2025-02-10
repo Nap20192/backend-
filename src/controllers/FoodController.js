@@ -1,10 +1,11 @@
 import Food from '../models/Food.js';
+import multer from 'multer';
 
 class FoodController { 
     async getAllFood(req, res) {
         try {
             const food = await Food.find();
-            return res.json(food);
+            res.render('all_food', { food });
         } catch (err) {
             console.error('Error during getting food:', err);
             res.status(500).json({ message: "Internal server error" });
@@ -23,12 +24,19 @@ class FoodController {
 
     async createFood(req, res) {
         try {
+            
             const authorId = req.user.id;
             const authorName = req.user.username;
-            const { name, descriptionRU,descriptionEN, image } = req.body;
-            const food = new Food({ name, descriptionRU,descriptionEN, authorId, authorName, image });
+            const food = new Food({
+                name: req.body.name,
+                authorId,
+                authorName, 
+                descriptionEN: req.body.descriptionEN,
+                descriptionRU: req.body.descriptionRU,
+                image: `/uploads/${req.file.filename}`
+              });            
             await food.save();
-            console.log(`Food ${name} successfully added!`);
+            console.log(`Food ${food.name} successfully added!`);
             return res.json(food);
         } catch (err) {
             console.error('Error during creating food:', err);

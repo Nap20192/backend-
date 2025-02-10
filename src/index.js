@@ -14,7 +14,7 @@ import https from 'https'
 import { updateUser, deleteUser } from './controllers/AdminController.js'
 import translate from 'translate-google'
 import FoodController from './controllers/FoodController.js'
-
+import upload from './middleware/upload.js'
 dotenv.config();
 const require = createRequire(import.meta.url)
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -28,9 +28,8 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.static(path.join(__dirname, '../public')))
 app.set('view engine', 'ejs')
 app.set('views')
-
 app.use(cookieParser())
-
+app.use('/uploads', express.static('uploads'));
 const API_KEY = '1d6dc3890cf79b7449306bced111270d';
 const MONGO_URI = process.env.MONGO_URI 
 
@@ -104,9 +103,7 @@ app.get('/', async (req,res)=>{
     
     favoriteData = await UserDataController.getFavoriteRecipes(username)
 
-    let response = await axios.get(`http://localhost:3000/food`)
-    console.log(response)
-    createdData = response.data
+    createdData = await UserDataController.getcreatedRecipes(username)
     console.log(createdData)
   } else {
     username = null
@@ -491,7 +488,10 @@ app.get('/instructions/:id', async (req, res) => {
 
 app.get('/food', FoodController.getAllFood);
 app.get('/food/:id', FoodController.getFoodById);
-app.post('/food', FoodController.createFood);
+app.post('/food',upload.single('image'),(req,res,next)=>{
+  console.log(req.file)
+  next()
+}, FoodController.createFood);
 app.put('/food/:id', FoodController.updateFood);
 app.delete('/food/:id', FoodController.deleteFood);
 app.get('/create', async (req, res) => {

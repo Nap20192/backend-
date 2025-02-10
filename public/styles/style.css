@@ -49,8 +49,9 @@ header h1 {
 .card img {
   width: 100%;
   max-width: 500px;
+  margin-top: 10px;
   max-height: 200px;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .instruction-div img {
