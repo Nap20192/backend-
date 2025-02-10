@@ -65,12 +65,12 @@ class FoodController {
                     path: "/"
                   };
                 const user = req.user
-                const user_role = user.role
                 let isAdmin = false
-                if (user_role === "admin") {
-                    isAdmin = true
-                }
                 if (user) {
+                    const user_role = user.role
+                    if (user_role === "admin") {
+                        isAdmin = true
+                    }
                     username = user.username
                     const source = 'user-created-posts'
                     await UserDataController.updateViewedRecipes(username, food.id, source)
