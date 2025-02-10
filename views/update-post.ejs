@@ -12,30 +12,31 @@
   <%- include('partials/navbar') %>
       <main>
     <div class="panel">
-        <h1>Add Food</h1>
+        <h1>Update Food</h1>
         <div class="postForm">
-            <form action="/api/food" method="POST" enctype="multipart/form-data">
+            <form action="/api/food/<%= id %>?_method=PUT" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="name">Food Name:</label>
-                    <input class="margin-bottom" type="text" id="name" name="name" required>
+                    <input class="margin-bottom" type="text" id="name" name="name" value="<%= name %>" required>
                 </div>
             
                 <div class="form-group">
                     <label for="descriptionEN">Description in English</label>
-                    <textarea class="margin-bottom" id="descriptionEN" name="descriptionEN" required></textarea>
+                    <textarea class="margin-bottom" id="descriptionEN" name="descriptionEN" required><%= descriptionEN %></textarea>
                 </div>
             
                 <div class="form-group">
                     <label for="descriptionRU">Description in Russian</label>
-                    <textarea class="margin-bottom" id="descriptionRU" name="descriptionRU" required></textarea>
+                    <textarea class="margin-bottom" id="descriptionRU" name="descriptionRU" required><%= descriptionRU %></textarea>
                 </div>
 
                 <div class="form-group">
                     <label for="image">Image</label>
-                    <input class="margin-bottom upload" type="file" id="image" name="image" >
+                    <input type="hidden" name="original_img" value="<%= image %>">
+                    <input class="margin-bottom upload" type="file" id="image" name="image">
                   </div>
-            
-                <button type="submit" class="submit-btn">Add Food</button>
+                
+                <button type="submit" class="submit-btn">Update Food</button>
             </form>
     </div>
 </div>

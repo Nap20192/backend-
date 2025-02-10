@@ -13,9 +13,25 @@ const AdminSchema = new Schema({
         type: String,
         required: true
     },
-    history: [
+    user_management_history: [
         {
             username: {
+                type: String,
+                required: true
+            },
+            date: {
+                type: Date, 
+                required: true
+            },
+            method: {
+                type: String,
+                required: true
+            }
+        }
+    ],
+    post_management_history: [
+        {
+            post: {
                 type: String,
                 required: true
             },

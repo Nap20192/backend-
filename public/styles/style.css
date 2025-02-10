@@ -49,10 +49,15 @@ header h1 {
 .card img {
   width: 100%;
   max-width: 500px;
-  margin-top: 10px;
   max-height: 200px;
-  object-fit: contain;
+  object-fit: fill;
 }
+
+.card .beer-img {
+  object-fit: contain;
+  margin-top: 10px;
+}
+
 
 .instruction-div img {
   display: block;
@@ -291,4 +296,27 @@ textarea {
 .side-link {
   color:rgb(114, 114, 114);
   margin-right: 10px;
+}
+
+.delete-btn {
+  background-color: rgb(255, 153, 153);
+  max-width: 150px;
+  margin: 5px auto;
+}
+
+.delete-btn:hover {
+  background-color: rgb(248, 112, 112);
+}
+
+.upload {
+  font-size: 1rem;
+  width:80%;
+  padding: 8px;
+  color: #333;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 25px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  outline: none;
+  transition: all 0.3s ease-in-out;
 }
