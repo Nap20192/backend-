@@ -5,7 +5,32 @@ class FoodController {
     async getAllFood(req, res) {
         try {
             const food = await Food.find();
-            res.render('all_food', { food });
+            if (req.path.includes('/posts')) {
+                let page = {
+                    beerNav: "Beer",
+                    mealsNav: "Meals",
+                    weatherNav: "Weather",
+                    logoutBtn: "Log Out",
+                    loginBtn: "Log In",
+                    searchHeader: "Find Recipe",
+                    infoBtn: "View More",
+                    singupBtn: "Sign up",
+                    langBtn: "Language",
+                    lang: "en",
+                    path: "/"
+                  };
+                const username = req.user.username
+                if (req.params) {
+                    if (req.path.includes('/en') || req.path.includes('/ru')) {
+                        page.path = req.path.slice(0, -3)
+                    } else {
+                        page.path = req.path
+                    }
+                    page.lang = req.params.lang
+                }
+                return res.render('all_food', { food, username, page });
+            }
+            res.json(food)
         } catch (err) {
             console.error('Error during getting food:', err);
             res.status(500).json({ message: "Internal server error" });
@@ -13,8 +38,33 @@ class FoodController {
     }
     async getFoodById(req, res) {
         try {
-            const { id } = req.params;
-            const food = await Food.findById(id);
+            const id = req.params.id;
+            const food = await Food.findById({ _id: id });
+            if (req.path.includes('/posts')) {
+                let page = {
+                    beerNav: "Beer",
+                    mealsNav: "Meals",
+                    weatherNav: "Weather",
+                    logoutBtn: "Log Out",
+                    loginBtn: "Log In",
+                    searchHeader: "Find Recipe",
+                    infoBtn: "View More",
+                    singupBtn: "Sign up",
+                    langBtn: "Language",
+                    lang: "en",
+                    path: "/"
+                  };
+                const username = req.user.username
+                if (req.params) {
+                    if (req.path.includes('/en') || req.path.includes('/ru')) {
+                        page.path = req.path.slice(0, -3)
+                    } else {
+                        page.path = req.path
+                    }
+                    page.lang = req.params.lang
+                }
+                return res.render('post', { food, username, page });
+            }
             return res.json(food);
         } catch (err) {
             console.error('Error during getting food:', err);

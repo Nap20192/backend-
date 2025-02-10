@@ -43,7 +43,8 @@ let pageMain = {
   infoBtn: "View More",
   singupBtn: "Sign up",
   langBtn: "Language",
-  lang: "en"
+  lang: "en",
+  path: "/"
 };
 
 
@@ -97,6 +98,8 @@ app.get('/', async (req,res)=>{
   let favoriteData
   let createdData
   let page = {...pageMain}
+  page.path = ''
+  console.log(page.path)
   if (user) {
     username = user.username
     recipeData = await UserDataController.getViewedRecipes(username)
@@ -108,7 +111,7 @@ app.get('/', async (req,res)=>{
   } else {
     username = null
   }
-  res.render('home', { username, recipeData, favoriteData, createdData, page })
+  res.render('home', { username, recipeData, favoriteData, createdData, page, path })
   
 })
 
@@ -120,6 +123,7 @@ app.get('/:lang(en|ru)', async (req,res)=>{
   let favoriteData
   let createdData
   let page = {...pageMain}
+  page.path = ''
   const lang = req.params.lang
   if (user) {
     username = user.username
@@ -127,8 +131,7 @@ app.get('/:lang(en|ru)', async (req,res)=>{
     
     favoriteData = await UserDataController.getFavoriteRecipes(username)
 
-    let response = await axios.get(`http://localhost:3000/food`)
-    createdData = response.data
+    createdData = await UserDataController.getcreatedRecipes(username)
     if (lang !== "en") {
       page.lang = lang
     }
@@ -147,6 +150,7 @@ app.get('/weather', async (req, res) => {
   const query = "Weather:" + city
   let user = req.user
   let username
+  
   if (user) {
     username = user.username
     UserDataController.updateSearchHistory(username, query)
@@ -187,7 +191,7 @@ app.get('/meals/:lang', async (req, res) => {
   let page = { ...pageMain }
   page.mainHeader = "Meals"
   page.lang = lang
-
+  page.path = '/meals'
   if (user) {
     username = user.username
     UserDataController.updateSearchHistory(username, queryReceiver, query)
@@ -232,6 +236,7 @@ app.get('/meals', async (req, res) => {
   let user = req.user
   let username
   let page = { ...pageMain }
+  page.path = req.path
   page.mainHeader = "Meals"
 
   if (user) {
@@ -267,6 +272,7 @@ app.get('/beer/:lang', async (req, res) => {
   let username = user ? user.username : null;
   let beerResponse
   let page = { ...pageMain }
+  page.path = 'beer'
   page.mainHeader = "Beer"
   if (user) {
       UserDataController.updateSearchHistory(username, queryReceiver, query);
@@ -314,6 +320,7 @@ app.get('/beer', async (req, res) => {
   let beerResponse
   let page = { ...pageMain }
   page.mainHeader = "Beer"
+  page.path = req.path
   if (user) {
       UserDataController.updateSearchHistory(username, queryReceiver, query);
   }
@@ -486,18 +493,22 @@ app.get('/instructions/:id', async (req, res) => {
   }
 });
 
-app.get('/food', FoodController.getAllFood);
-app.get('/food/:id', FoodController.getFoodById);
-app.post('/food',upload.single('image'),(req,res,next)=>{
+app.get('/api/food', FoodController.getAllFood);
+app.get('/api/food/:id', FoodController.getFoodById);
+app.post('/api/food',upload.single('image'),(req,res,next)=>{
   console.log(req.file)
   next()
 }, FoodController.createFood);
-app.put('/food/:id', FoodController.updateFood);
-app.delete('/food/:id', FoodController.deleteFood);
+app.put('/api/food/:id', FoodController.updateFood);
+app.delete('/api/food/:id', FoodController.deleteFood);
 app.get('/create', async (req, res) => {
   const username = req.user.username
-  res.render('food', {username})
+  res.render('create-post', {username})
 })
+
+app.get('/posts/:lang', FoodController.getAllFood)
+app.get('/posts/:lang/:id', FoodController.getFoodById)
+
 
 const PORT = process.env.PORT
 

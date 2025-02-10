@@ -10,9 +10,12 @@
 </head>
 
 <body>
+  
+  <%- include('partials/navbar-lang') %>
   <main>
     <div class="container">
       <div class="row">
+        <h1 class="text-center my-4">Created Content</h1>
         <% if (food === null) { %> 
           <div class="error-msg">
             <p>Couldn't find anything.</p>
@@ -24,8 +27,13 @@
                 <img src="<%= f.image%>" class="card-img-top">
                 <div class="card-body">
                   <h5 class="card-title"><%= f.name %></h5>
-                  <p class="card-text"><%= f.descriptionEN.substring(0, 100) %>...</p>
-                  <a href="/food/<%= f.id %>" class="btn">View</a>
+                  <% if (page.lang !== 'en') { %>
+                    <p class="card-text"><%= f.descriptionRU.substring(0, 100) %>...</p>
+                  <% } else { %>
+                    <p class="card-text"><%= f.descriptionEN.substring(0, 100) %>...</p>
+                  <% } %>
+                  
+                  <a href="/posts/<%= page.lang %>/<%= f.id %>" class="btn">View</a>
                 </div>
               </div>
             </div>
