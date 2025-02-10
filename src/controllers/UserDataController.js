@@ -79,20 +79,46 @@ class UserDataController {
       }
     }
 
+    async removeViewedRecipes(username, recipeId) {
+      try {
+        const userData = await UserData.findOne({ username })
+        let viewedRecipes = userData.viewedRecipes ? userData.viewedRecipes : []
+        if (viewedRecipes.some((recipe) => recipe.recipeId === recipeId)) {
+          let recipeIndex = viewedRecipes.findIndex((recipe) => recipe.recipeId === recipeId)
+          viewedRecipes.splice(recipeIndex, 1)
+        } 
+        await UserData.updateOne({ username: username }, { $set: { viewedRecipes: viewedRecipes } })
+        console.log("Removing favorite recipes succeeded.")
+        console.log(viewedRecipes)
+      } catch (err) {
+        console.error("Removing favorite recipes failed.", err)
+      }
+    }
+
     async getUserRecipeDataFromAPI(array) {
       try {
         let recipes = []
         let apiUrl;
-        for (const recipe of array.slice(0, 3)) {
+        let response
+        for (const recipe of array) {
           let recipeId = recipe.recipeId
           let source = recipe.type
           if (source === 'meals') {
             apiUrl = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${recipeId}`;
           } else if (source === 'beer') {
             apiUrl = `https://punkapi.online/v3/beers/${recipeId}`;
+          } else if (source === 'created-posts'){
+            const food = await Food.find({ _id: recipeId })
+            console.log(food)
+            if (food[0]) {
+              recipes.push(food[0])
+            }
+            
+            continue
           } else {
             continue
           }
+          console.log(apiUrl)
           const response = await axios.get(apiUrl);
           const recipeData = source === 'meals' ? response.data.meals[0] : response.data;
           recipes.push(recipeData)
@@ -110,10 +136,11 @@ class UserDataController {
         await this.createUserData(username)
         const userData = await UserData.findOne({ username })
         let viewedRecipes = userData.viewedRecipes ? userData.viewedRecipes : []
-        let recipes = this.getUserRecipeDataFromAPI(viewedRecipes)
+        let recipes = await this.getUserRecipeDataFromAPI(viewedRecipes)
+        console.log(recipes)
         
         console.log("Viewed history successfully retrieved.")
-        return recipes
+        return recipes.slice(0, 3)
       } catch (err) {
         console.error("Failed to retreive view history.", err)
       }
@@ -124,7 +151,7 @@ class UserDataController {
         await this.createUserData(username)
         const userData = await UserData.findOne({ username })
         let favorites = userData.favorites ? userData.favorites : []
-        let recipes = this.getUserRecipeDataFromAPI(favorites)
+        let recipes = await this.getUserRecipeDataFromAPI(favorites)
 
         console.log("Favorites successfully retrieved.")
         return recipes

@@ -23,8 +23,8 @@
             <%= page.langBtn %>
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="<%= page.path %>/en">en</a></li>
-            <li><a class="dropdown-item" href="<%= page.path %>/ru">ru</a></li>
+            <li><a class="dropdown-item" href="/posts/en/<%= food.id =>">en</a></li>
+            <li><a class="dropdown-item" href="/posts/ru/<%= food.id =>">ru</a></li>
           </ul>
         </li>
         
@@ -38,7 +38,7 @@
       <% } else  { %>
         <a href="/login" class="nav-link"><button class="submit-btn"><%= page.loginBtn %></button></a>
         
-      <% }%>
+      <% } %>
       
     </div>
   </div>

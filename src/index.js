@@ -11,10 +11,12 @@ import cookieParser from 'cookie-parser'
 import { body } from 'express-validator';
 import authMiddleware from './middleware/AuthMiddleware.js'
 import https from 'https'
-import { updateUser, deleteUser } from './controllers/AdminController.js'
+import { updateUser, deleteUser, deletePost, updatePost } from './controllers/AdminController.js'
 import translate from 'translate-google'
 import FoodController from './controllers/FoodController.js'
 import upload from './middleware/upload.js'
+import multer from 'multer'
+import methodOverride from 'method-override'
 dotenv.config();
 const require = createRequire(import.meta.url)
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -24,7 +26,7 @@ const app = express()
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-
+app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, '../public')))
 app.set('view engine', 'ejs')
 app.set('views')
@@ -84,7 +86,7 @@ app.post('/register',
 
 app.post('/login', AuthController.login);
 app.post('/logout', AuthController.logout);
-app.get('/getUsers',AuthController.getUser)
+app.get('/getUsers', AuthController.getUser)
 
 
 
@@ -108,6 +110,8 @@ app.get('/', async (req,res)=>{
 
     createdData = await UserDataController.getcreatedRecipes(username)
     console.log(createdData)
+    console.log(recipeData)
+    console.log(favoriteData)
   } else {
     username = null
   }
@@ -499,7 +503,7 @@ app.post('/api/food',upload.single('image'),(req,res,next)=>{
   console.log(req.file)
   next()
 }, FoodController.createFood);
-app.put('/api/food/:id', FoodController.updateFood);
+app.put('/api/food/:id', upload.single('image'), updatePost);
 app.delete('/api/food/:id', FoodController.deleteFood);
 app.get('/create', async (req, res) => {
   const username = req.user.username
@@ -508,6 +512,21 @@ app.get('/create', async (req, res) => {
 
 app.get('/posts/:lang', FoodController.getAllFood)
 app.get('/posts/:lang/:id', FoodController.getFoodById)
+
+app.delete('/posts/:foodId', deletePost)
+
+app.post('/update-post', async (req, res) => {
+  const { id, name, descriptionEN, descriptionRU, image } = req.body
+  const user = req.user
+  let username
+  if (user) {
+    username = user.username
+  } else {
+    username = null
+  }
+  console.log(id)
+  res.render('update-post.ejs', { id, name, descriptionEN, descriptionRU, image, username } )
+})
 
 
 const PORT = process.env.PORT

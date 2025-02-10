@@ -34,8 +34,8 @@
               <% createdData.forEach(recipe => { %>
                 <div class="col-md-4 mb-4">
                   <div class="card">
+                    <img src=<%= recipe.image %>>
                     <div class="card-body">
-                      <img src=<%= recipe.image %>>
                       <h5 class="card-title"><b><%= recipe.name %></b></h5>
                       <p class="card-text"><%= recipe.authorName %></p>
                       <% if (page.lang !== "en") { %> 
@@ -44,7 +44,7 @@
                         <p class="card-text"><i><%= recipe.descriptionEN.substring(0, 100) %>...</i></p>
                       <% } %>
                       <p class="card-text"><%= recipe.timestamp %></p>
-                      <a href="/post/<%= recipe.id %>" class="btn">View</a>
+                      <a href="/posts/<%= page.lang %>/<%= recipe.id %>" class="btn">View</a>
                     </div>
                   </div>
                 </div>
@@ -61,6 +61,7 @@
           <% if (recipeData) { %>
             <div class="row">
               <% recipeData.forEach(recipe => { %>
+                <% if (recipe) { %>
                 <% if (recipe.strMeal) { %>
                   <div class="col-md-4 mb-4">
                     <div class="card">
@@ -75,10 +76,11 @@
                       </div>
                     </div>
                   </div>
-                <% } else { %>
+                <% } else if (recipe.tagline) { %>
                   <div class="col-md-4 mb-4">
                     <div class="card">
                       <div class="card-body">
+                        <img style="height: 100%;" src="<%=`https://punkapi.online/v3/images/${recipe.image}`%>" class="beer-img">
                         <h5 class="card-title"><b><%= recipe.name %></b></h5>
                         <p class="card-text"><%= recipe.tagline %></p>
                         <p class="card-text">Description: <i><%= recipe.description.substring(0, 100) %>...</i></p>
@@ -87,6 +89,25 @@
                       </div>
                     </div>
                   </div>
+                <% } else { %>
+                  <div class="col-md-4 mb-4">
+                    <div class="card">
+                      <img src=<%= recipe.image %> class="img-fluid">
+                      <div class="card-body">
+                        
+                        <h5 class="card-title"><b><%= recipe.name %></b></h5>
+                        <p class="card-text"><%= recipe.authorName %></p>
+                        <% if (page.lang !== "en") { %> 
+                          <p class="card-text"><i><%= recipe.descriptionRU.substring(0, 100) %>...</i></p>
+                        <% } else { %>
+                          <p class="card-text"><i><%= recipe.descriptionEN.substring(0, 100) %>...</i></p>
+                        <% } %>
+                        <p class="card-text"><%= recipe.timestamp %></p>
+                        <a href="/posts/<%= page.lang %>/<%= recipe.id %>" class="btn">View</a>
+                      </div>
+                    </div>
+                  </div>
+                <% } %>
                 <% } %>
               <% }) %>
             </div>
@@ -101,6 +122,7 @@
           <% if (favoriteData) { %>
             <div class="row">
               <% favoriteData.forEach(favorite => { %>
+                <% if (favorite) { %>
                 <% if (favorite.strMeal) { %>
                   <div class="col-md-4 mb-4">
                     <div class="card">
@@ -115,10 +137,11 @@
                       </div>
                     </div>
                   </div>
-                <% } else { %>
+                <% } else if (favorite.tagline) { %>
                   <div class="col-md-4 mb-4">
                     <div class="card">
                       <div class="card-body">
+                        <img style="height: 100%;" src="<%=`https://punkapi.online/v3/images/${favorite.image}`%>" class="beer-img">
                         <h5 class="card-title"><b><%= favorite.name %></b></h5>
                         <p class="card-text"><%= favorite.tagline %></p>
                         <p class="card-text">Description: <i><%= favorite.description.substring(0, 100) %>...</i></p>
@@ -127,6 +150,25 @@
                       </div>
                     </div>
                   </div>
+                <% } else { %>
+                  <div class="col-md-4 mb-4">
+                    <div class="card">
+                      <img src=<%= favorite.image %> class="img-fluid">
+                      <div class="card-body">
+                        
+                        <h5 class="card-title"><b><%= favorite.name %></b></h5>
+                        <p class="card-text"><%= favorite.authorName %></p>
+                        <% if (page.lang !== "en") { %> 
+                          <p class="card-text"><i><%= favorite.descriptionRU.substring(0, 100) %>...</i></p>
+                        <% } else { %>
+                          <p class="card-text"><i><%= favorite.descriptionEN.substring(0, 100) %>...</i></p>
+                        <% } %>
+                        <p class="card-text"><%= favorite.timestamp %></p>
+                        <a href="/posts/<%= page.lang %>/<%= favorite.id %>" class="btn">View</a>
+                      </div>
+                    </div>
+                  </div>
+                <% } %>
                 <% } %>
               <% }) %>
             </div>
