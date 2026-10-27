@@ -4,14 +4,9 @@ This application provides weather information based on your location, meal recip
 
 [Deployed project link:](https://backend-148t.onrender.com/)
 
-## Users for testing the App
-#### Admins
-- username: Rakhat Lucum   password: lucum
-- username: Nikolay Kogay  password: kogay2005
+## Test accounts
 
-#### Non-admins
-- username: frieren   password: frieren
-- username: uo   password: uo
+Create local test accounts when running the application. Do not publish account passwords.
 
 ## Features
 
