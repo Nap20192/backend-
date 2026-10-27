@@ -1,1 +1,6 @@
 node_modules
+
+# Local configuration
+.env
+.env.*
+!.env.example
