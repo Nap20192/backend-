@@ -1,5 +1,16 @@
 # Meal and Weather Information App
 
+## Local configuration
+
+Before starting the application, copy the example configuration:
+
+```sh
+cp .env.example .env
+```
+
+Set local values in `.env`. This file is ignored by Git. Use separate credentials for deployed environments.
+
+
 This application provides weather information based on your location, meal recipes, and a photo related to the weather, beer information. It uses several APIs, including OpenWeatherMap, Unsplash, and ThemealDB, Punk API to retrieve and display the information.
 
 [Deployed project link:](https://backend-148t.onrender.com/)
