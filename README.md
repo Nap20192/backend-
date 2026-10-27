@@ -1,5 +1,9 @@
 # Meal and Weather Information App
 
+This application provides weather information based on your location, meal recipes, and a photo related to the weather, beer information. It uses several APIs, including OpenWeatherMap, Unsplash, and ThemealDB, Punk API to retrieve and display the information.
+
+[Deployed project link:](https://backend-148t.onrender.com/)
+
 ## Local configuration
 
 Before starting the application, copy the example configuration:
@@ -9,11 +13,6 @@ cp .env.example .env
 ```
 
 Set local values in `.env`. This file is ignored by Git. Use separate credentials for deployed environments.
-
-
-This application provides weather information based on your location, meal recipes, and a photo related to the weather, beer information. It uses several APIs, including OpenWeatherMap, Unsplash, and ThemealDB, Punk API to retrieve and display the information.
-
-[Deployed project link:](https://backend-148t.onrender.com/)
 
 ## Test accounts
 
@@ -129,13 +128,11 @@ To start the app:
 - By loggin in and pressing on the "Create post" button, you will be able to createa new post.
 - Admins can delete and edit posts by opening them and pressing the respective buttons.
 
-
 ## API
 
 ## API endpoints
 **/api/food** - displayes all created posts.
 **/api/food/:id** - display information about a specific food by its id.
-
 
 ## Files and Structure
 
